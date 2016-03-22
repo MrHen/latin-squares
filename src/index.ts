@@ -2,8 +2,8 @@ interface LatinCell {
   i: number;
   x: number;
   y: number;
-  guess?: number;
-  hint?: boolean;
+  guess: number;
+  hint: boolean;
   invalid?: boolean;
 
   nodes: LatinNode[];
@@ -25,7 +25,10 @@ interface LatinAxis {
 }
 
 interface LatinConstraint {
+  inner: string;
   node: LatinNode;
+  outer: string;
+  skip: boolean;
   value: boolean;
 }
 
@@ -43,6 +46,7 @@ interface LatinLink {
 interface LatinSolution {
   nodes: LatinNode[];
   s: number;
+  success: boolean;
   valid: boolean;
 }
 
@@ -165,12 +169,8 @@ let hiveConfig: HiveConfig = {
 hiveConfig.radius = d3.scale.ordinal<number, number>().domain(d3.range(hiveConfig.guessExtent[0] - 1, hiveConfig.guessExtent[1] + 1)).rangePoints([hiveConfig.innerRadius, hiveConfig.outerRadius]);
 
 hiveConfig.link = d3.hive.link()
-    .angle((link) => {
-        return hiveConfig.angle(link.cell.i);
-    })
-    .radius((link) => {
-        return hiveConfig.radius(link.guess);
-    });
+    .angle((link) => hiveConfig.angle(link.cell.i))
+    .radius((link) => hiveConfig.radius(link.guess));
 
 update();
 draw();
@@ -185,7 +185,7 @@ function draw() {
 
 // Rerun the solution filtering
 function update() {
-    let picked = [];
+    let picked: LatinCell[] = [];
     cells.forEach((cell) => {
         if (cell.guess) {
             picked.push(cell);
@@ -240,9 +240,6 @@ function drawHiveNodes(nodes: LatinNode[]) {
         .on("mouseout", (node) => {
             highlight = createHighlight();
             draw();
-        })
-        .on("click", (node) => {
-            console.log("node debug", node);
         });
 
     newNodes.append("circle")
@@ -251,12 +248,8 @@ function drawHiveNodes(nodes: LatinNode[]) {
         .style("stroke-width", 1.5);
 
     node.transition().duration(duration)
-        .style("fill", (node) => {
-            return getColor(node, highlight);
-        })
-        .style("stroke", (node) => {
-            return getBorderColor(node, highlight);
-        });
+        .style("fill", (node) => getColor(node, highlight))
+        .style("stroke", (node) => getBorderColor(node, highlight));
 }
 
 function drawHiveAxes(cells: LatinCell[]) {
@@ -273,29 +266,17 @@ function drawHiveAxes(cells: LatinCell[]) {
         .style("stroke-width", 1.5)
         .attr("x1", hiveConfig.radius.range()[0])
         .attr("x2", _.last<number>(hiveConfig.radius.range()));
-    // .on("mouseover", (cell) => {
-    //   highlight = createHighlight(cell);
-    //   draw();
-    // })
-    // .on("mouseout", (cell) => {
-    //   highlight = createHighlight();
-    //   draw();
-    // });
 
     line.selectAll("line")
         .transition().duration(duration)
-        .style("stroke", (cell) => {
-            return getBorderColor(cell, highlight);
-        });
+        .style("stroke", (cell) => getBorderColor(cell, highlight));
 }
 
-function drawHiveLinks(links: LatinLink[], cells) {
+function drawHiveLinks(links: LatinLink[], cells: LatinCell[]) {
     let picked = _.filter(cells, "guess");
 
     let link = hiveSvg.selectAll(".link")
-        .data(links, (link) => {
-            return link.key;
-        });
+        .data(links, (link) => link.key);
 
     link.enter()
         .append("path")
@@ -304,9 +285,7 @@ function drawHiveLinks(links: LatinLink[], cells) {
         .style("opacity", 0)
         .style("fill", "none")
         .style("stroke-width", 1.5)
-        .style("stroke", (link) => {
-            return color(link.solution.s);
-        });
+        .style("stroke", (link) => color(link.solution.s));
 
     link.exit()
         .transition().duration(duration)
@@ -502,9 +481,7 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
         .style("text-anchor", "start")
         .style("font-family", "monospace")
         .style("font-size", pixelSize)
-        .text((d) => {
-            return d;
-        });
+        .text((d) => d);
 
     let rows = constraintsSvg.selectAll("text.row")
         .data(rowLabels);
@@ -518,17 +495,17 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
         .style("text-anchor", "end")
         .style("font-family", "monospace")
         .style("font-size", pixelSize)
-        .text((d) => {
-            return d;
-        });
+        .text((d) => d);
 }
 
-function buildCells(size, reduced) {
+function buildCells(size: number, reduced: boolean) {
     return d3.range(size * size).map((i) => {
         let cell: LatinCell = {
             i: i,
             x: i % size,
             y: Math.floor(i / size),
+            guess: 0,
+            hint: false,
             nodes: []
         };
 
@@ -548,7 +525,7 @@ function buildCells(size, reduced) {
 }
 
 function buildNodes(cells: LatinCell[], size: number) {
-    let nodes = [];
+    let nodes: LatinNode[] = [];
 
     for (let i = 0; i < cells.length; i++) {
         let cell = cells[i];
@@ -570,19 +547,19 @@ function buildNodes(cells: LatinCell[], size: number) {
     return nodes;
 }
 
-function buildLinks(nodes, solutions) {
+function buildLinks(nodes: LatinNode[], solutions: LatinSolution[]) {
     function key(d) {
         return d.x + ":" + d.y + ":" + d.guess;
     }
 
-    let links = [];
+    let links: LatinLink[] = [];
     for (let s = 0; s < solutions.length; s++) {
         let solution = solutions[s];
         if (!solution.success) {
             continue;
         }
 
-        solution["s"] = s;
+        solution.s = s;
 
         for (let i = 0; i < solution.nodes.length; i++) {
             let source = solution.nodes[i];
@@ -594,9 +571,6 @@ function buildLinks(nodes, solutions) {
                 source: source,
                 target: target
             };
-            if (!source.solutions) {
-                source.solutions = [];
-            }
             source.solutions.push(solution);
             links.push(link);
         }
@@ -621,7 +595,7 @@ function createHighlight(target?: LatinNode | LatinCell): LatinHighlight {
     return highlight;
 }
 
-function getColorType(d, highlight) {
+function getColorType(d, highlight: LatinHighlight) {
     let isNeighborX = highlight && highlight.x === d.x;
     let isNeighborY = highlight && highlight.y === d.y;
     let isNeighborI = highlight && highlight.i === d.i;
@@ -708,19 +682,19 @@ function getColorType(d, highlight) {
     return "non-neighbor";
 }
 
-function getColor(d, highlight) {
+function getColor(d, highlight: LatinHighlight): string {
     return colors[getColorType(d, highlight)];
 }
 
-function getBorderColor(d, highlight) {
+function getBorderColor(d, highlight: LatinHighlight): string {
     return borders[getColorType(d, highlight)];
 }
 
-function getTextColor(d, highlight) {
+function getTextColor(d, highlight: LatinHighlight): string {
     return textColors[getColorType(d, highlight)];
 }
 
-function degrees(radians) {
+function degrees(radians: number) {
     return radians / Math.PI * 180 - 90;
 }
 
@@ -747,7 +721,7 @@ function buildConstraints(size: number, nodes: LatinNode[]) {
             return;
         }
 
-        let constraint;
+        let constraint: LatinConstraint;
         for (let a = 1; a <= size; a++) {
             for (let b = 1; b <= size; b++) {
                 matrix["R" + a + "#" + b] = matrix["R" + a + "#" + b] || {};
@@ -762,7 +736,7 @@ function buildConstraints(size: number, nodes: LatinNode[]) {
                     value: (a === i && b === k)
                 };
 
-                if (constraint.value || !constraint.sparse) {
+                if (constraint.value || !sparse) {
                     matrix[constraint.outer][constraint.inner] = constraint;
                 }
 
@@ -774,7 +748,7 @@ function buildConstraints(size: number, nodes: LatinNode[]) {
                     value: (a === j && b === k)
                 };
 
-                if (constraint.value || !constraint.sparse) {
+                if (constraint.value || !sparse) {
                     matrix[constraint.outer][constraint.inner] = constraint;
                 }
 
@@ -786,7 +760,7 @@ function buildConstraints(size: number, nodes: LatinNode[]) {
                     value: (a === i && b === j)
                 };
 
-                if (constraint.value || !constraint.sparse) {
+                if (constraint.value || !sparse) {
                     matrix[constraint.outer][constraint.inner] = constraint;
                 }
             }
@@ -815,7 +789,7 @@ interface DlxTree {
 
 ////// DANCING LINKS
 ////// Adapted from http://taeric.github.io/DancingLinks.html
-function solveWithDancingLinks(constraintMatrix, dlx_showSteps) {
+function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_showSteps: boolean) {
     let dlx_headers: DlxLink;
     let dlx_solutions = [];
     let dlx_O = [];
