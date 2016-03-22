@@ -121,7 +121,7 @@ let cells: LatinCell[] = buildCells(size, reduced);
 // One for each cell + guess combination (n^3 = 64 at size 4)
 let nodes = buildNodes(cells, size);
 
-let constraints = buildConstraints(cells, size, nodes);
+let constraints = buildConstraints(size, nodes);
 let dlx = solveWithDancingLinks(constraints, true);
 let solutions = dlx.solutions;
 
@@ -717,7 +717,7 @@ function degrees(radians) {
 // Dancing links will convert these to a linked matrix but it is a little
 // easier to grok what is happening if we split up the constraint generation
 // and the linked matrix builder.
-function buildConstraints(data, size, nodes) {
+function buildConstraints(size: number, nodes: LatinNode[]) {
     let sparse = false;
     let matrix: LatinConstraintMatrix = {};
 
