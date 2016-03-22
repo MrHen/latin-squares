@@ -165,10 +165,10 @@ let hiveConfig: HiveConfig = {
 hiveConfig.radius = d3.scale.ordinal<number, number>().domain(d3.range(hiveConfig.guessExtent[0] - 1, hiveConfig.guessExtent[1] + 1)).rangePoints([hiveConfig.innerRadius, hiveConfig.outerRadius]);
 
 hiveConfig.link = d3.hive.link()
-    .angle(function(link) {
+    .angle((link) => {
         return hiveConfig.angle(link.cell.i);
     })
-    .radius(function(link) {
+    .radius((link) => {
         return hiveConfig.radius(link.guess);
     });
 
@@ -186,12 +186,12 @@ function draw() {
 // Rerun the solution filtering
 function update() {
     let picked = [];
-    cells.forEach(function(cell) {
+    cells.forEach((cell) => {
         if (cell.guess) {
             picked.push(cell);
         }
 
-        cell.invalid = cell.guess && _.some(cells, function(other) {
+        cell.invalid = cell.guess && _.some(cells, (other) => {
             if (other.guess !== cell.guess) {
                 return false;
             }
@@ -204,9 +204,9 @@ function update() {
         });
     });
 
-    links.forEach(function(link) {
-        let valid = _.every(picked, function(p) {
-            return _.some(link.solution.nodes, function(node) {
+    links.forEach((link) => {
+        let valid = _.every(picked, (p) => {
+            return _.some(link.solution.nodes, (node) => {
                 return node.guess === p.guess && node.cell.i === p.i;
             });
         });
@@ -218,7 +218,7 @@ function update() {
 let toggleOn = true;
 function textToggle() {
     toggleOn = !toggleOn;
-    d3.selectAll(".text").style("display", function() {
+    d3.selectAll(".text").style("display", () => {
         return toggleOn ? "block" : "none";
     });
 }
@@ -230,18 +230,18 @@ function drawHiveNodes(nodes: LatinNode[]) {
     let newNodes = node.enter()
         .append("g")
         .attr("class", "node")
-        .attr("transform", function(node) {
+        .attr("transform", (node) => {
             return "rotate(" + degrees(hiveConfig.angle(node.cell.i)) + ")translate(" + hiveConfig.radius(node.guess) + ",0)";
         })
-        .on("mouseover", function(node) {
+        .on("mouseover", (node) => {
             highlight = createHighlight(node);
             draw();
         })
-        .on("mouseout", function(node) {
+        .on("mouseout", (node) => {
             highlight = createHighlight();
             draw();
         })
-        .on("click", function(node) {
+        .on("click", (node) => {
             console.log("node debug", node);
         });
 
@@ -251,10 +251,10 @@ function drawHiveNodes(nodes: LatinNode[]) {
         .style("stroke-width", 1.5);
 
     node.transition().duration(duration)
-        .style("fill", function(node) {
+        .style("fill", (node) => {
             return getColor(node, highlight);
         })
-        .style("stroke", function(node) {
+        .style("stroke", (node) => {
             return getBorderColor(node, highlight);
         });
 }
@@ -265,7 +265,7 @@ function drawHiveAxes(cells: LatinCell[]) {
     let newLine = line.enter()
         .append("g")
         .attr("class", "axis")
-        .attr("transform", function(cell) {
+        .attr("transform", (cell) => {
             return "rotate(" + degrees(hiveConfig.angle(cell.i)) + ")";
         });
 
@@ -273,18 +273,18 @@ function drawHiveAxes(cells: LatinCell[]) {
         .style("stroke-width", 1.5)
         .attr("x1", hiveConfig.radius.range()[0])
         .attr("x2", _.last<number>(hiveConfig.radius.range()));
-    // .on("mouseover", function(cell) {
+    // .on("mouseover", (cell) => {
     //   highlight = createHighlight(cell);
     //   draw();
     // })
-    // .on("mouseout", function(cell) {
+    // .on("mouseout", (cell) => {
     //   highlight = createHighlight();
     //   draw();
     // });
 
     line.selectAll("line")
         .transition().duration(duration)
-        .style("stroke", function(cell) {
+        .style("stroke", (cell) => {
             return getBorderColor(cell, highlight);
         });
 }
@@ -293,7 +293,7 @@ function drawHiveLinks(links: LatinLink[], cells) {
     let picked = _.filter(cells, "guess");
 
     let link = hiveSvg.selectAll(".link")
-        .data(links, function(link) {
+        .data(links, (link) => {
             return link.key;
         });
 
@@ -304,7 +304,7 @@ function drawHiveLinks(links: LatinLink[], cells) {
         .style("opacity", 0)
         .style("fill", "none")
         .style("stroke-width", 1.5)
-        .style("stroke", function(link) {
+        .style("stroke", (link) => {
             return color(link.solution.s);
         });
 
@@ -314,7 +314,7 @@ function drawHiveLinks(links: LatinLink[], cells) {
         .remove();
 
     link.transition().duration(duration)
-        .style("opacity", function(link) {
+        .style("opacity", (link) => {
             if (!link.solution.valid) {
                 return 0;
             }
@@ -339,7 +339,7 @@ function drawLatin(cells: LatinCell[]) {
     let cellSpacing = 2;
     let cellSize = Math.min(maxWidth, maxHeight) - cellSpacing;
 
-    let offset = function(x) {
+    let offset = (x) => {
         return (x) * (cellSize + cellSpacing) + margin;
     };
 
@@ -351,18 +351,18 @@ function drawLatin(cells: LatinCell[]) {
         .attr("class", "cell")
         .attr("width", cellSize)
         .attr("height", cellSize)
-        .attr("transform", function(cell) {
+        .attr("transform", (cell) => {
             return "translate(" + offset(cell.x) + "," + offset(cell.y) + ")";
         })
-        .on("mouseover", function(cell) {
+        .on("mouseover", (cell) => {
             highlight = createHighlight(cell);
             draw();
         })
-        .on("mouseout", function(cell) {
+        .on("mouseout", (cell) => {
             highlight = createHighlight();
             draw();
         })
-        .on("click", function(cell) {
+        .on("click", (cell) => {
             console.log("cell debug", cell);
 
             if (!cell.hint) {
@@ -386,22 +386,22 @@ function drawLatin(cells: LatinCell[]) {
         .attr("text-anchor", "middle")
         .style("font-size", cellSize * 0.3)
         .attr("dominant-baseline", "central")
-        .attr("transform", function(cell) {
+        .attr("transform", (cell) => {
             return "translate(" + cellSize / 2 + "," + cellSize / 2 + ")";
         });
 
     cell.select(".box")
         .transition().duration(duration)
-        .attr("stroke", function(cell) {
+        .attr("stroke", (cell) => {
             return getBorderColor(cell, highlight);
 
         })
-        .attr("fill", function(cell) {
+        .attr("fill", (cell) => {
             return getColor(cell, highlight);
         });
 
     cell.select(".label")
-        .text(function(cell) {
+        .text((cell) => {
             if (highlight && highlight.i === cell.i) {
                 return highlight.guess;
             }
@@ -412,7 +412,7 @@ function drawLatin(cells: LatinCell[]) {
 
             return null;
         })
-        .attr("fill", function(cell) {
+        .attr("fill", (cell) => {
             return getTextColor(cell, highlight);
         });
 }
@@ -439,7 +439,7 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
     let pixelSpacing = 1;
     let pixelSize = Math.min(maxWidth, maxHeight) - pixelSpacing;
     let labelSize = pixelSize * labelOffset;
-    let offset = function(x) {
+    let offset = (x) => {
         return (x + 1) * (pixelSize + pixelSpacing);
     };
 
@@ -458,16 +458,16 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
         .attr("width", pixelSize)
         .attr("height", pixelSize)
         .style("stroke-width", 0.25)
-        .attr("transform", function(constraint) {
+        .attr("transform", (constraint) => {
             return "translate(" + offset(_.indexOf(columnLabels, constraint[columnIndex]) + labelOffset) + "," + offset(_.indexOf(rowLabels, constraint[rowIndex]) + labelOffset) + ")";
         })
-        .on("mouseover", function(constraint) {
+        .on("mouseover", (constraint) => {
             if (constraint.value) {
                 highlight = createHighlight(constraint.node);
                 draw();
             }
         })
-        .on("mouseout", function(constraint) {
+        .on("mouseout", (constraint) => {
             if (highlight) {
                 highlight = createHighlight();
                 draw();
@@ -475,14 +475,14 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
         });
 
     pixel.transition().duration(duration)
-        .style("stroke", function(constraint) {
+        .style("stroke", (constraint) => {
             if (!constraint.value) {
                 return borders["filler"];
             }
 
             return getBorderColor(constraint.node, highlight);
         })
-        .style("fill", function(constraint) {
+        .style("fill", (constraint) => {
             if (!constraint.value) {
                 return colors["filler"];
             }
@@ -496,13 +496,13 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
     columns.enter()
         .append("text")
         .attr("class", "column")
-        .attr("transform", function(d, i) {
+        .attr("transform", (d, i) => {
             return "translate(" + offset(labelOffset + i + 0.5) + "," + offset(labelOffset - 0.5) + ") rotate(270 0,0)";
         })
         .style("text-anchor", "start")
         .style("font-family", "monospace")
         .style("font-size", pixelSize)
-        .text(function(d) {
+        .text((d) => {
             return d;
         });
 
@@ -512,19 +512,19 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
     rows.enter()
         .append("text")
         .attr("class", "row")
-        .attr("transform", function(d, i) {
+        .attr("transform", (d, i) => {
             return "translate(" + offset(labelOffset - 0.5) + "," + offset(labelOffset + i + 0.5) + ")";
         })
         .style("text-anchor", "end")
         .style("font-family", "monospace")
         .style("font-size", pixelSize)
-        .text(function(d) {
+        .text((d) => {
             return d;
         });
 }
 
 function buildCells(size, reduced) {
-    return d3.range(size * size).map(function(i) {
+    return d3.range(size * size).map((i) => {
         let cell: LatinCell = {
             i: i,
             x: i % size,
@@ -735,7 +735,7 @@ function buildConstraints(size: number, nodes: LatinNode[]) {
     let matrix: LatinConstraintMatrix = {};
 
     // Use the existing data cells instead of three loops so we can prune hints
-    nodes.forEach(function(node) {
+    nodes.forEach((node) => {
         let i = node.cell.y + 1;
         let j = node.cell.x + 1;
         let k = node.guess;
