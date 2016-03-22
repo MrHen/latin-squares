@@ -1,0 +1,74 @@
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  margin: auto;
+  position: relative;
+  padding: 2em 15em 2em 2em;
+  background: #667;
+}
+
+.text {
+  margin-left: auto;
+  margin-right: auto;
+  min-width: 20em;
+  max-width: 40em;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+hr.text {
+  border: solid 1px #222;
+  margin: 0.5em;
+}
+
+.chart {
+  display: block;
+  margin: 1em auto;
+}
+
+.chart svg {
+  background: white;
+  border: 1px solid grey;
+  border-radius: 5px;
+  display: block;
+  margin: 1em auto;
+}
+
+.bad {
+  color: #e41a1c;
+}
+
+.x-neighbor {
+  color: #b3e2cd;
+}
+
+.y-neighbor {
+  color: #fdcdac;
+}
+
+#latin-squares-container {
+  position: fixed;
+  top: 1em;
+  right: 1em;
+}
+
+#text-toggle {
+  position: fixed;
+  top: 17em;
+  right: 1em;
+  width: 200px;
+}
+
+#text-toggle button {
+  border: solid 1px grey;
+  border-radius: 5px;
+  background-color: white;
+  display: block;
+  font: inherit;
+  font-size: 80%;
+  padding: 0.75em;
+  margin: auto;
+}
+
+#text-toggle button:hover {
+  background-color: lightgrey;
+}

@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "outDir": "app",
+        "rootDir": "src",
+        "noImplicitAny": false,
+        "noEmitOnError": true
+    },
+    "compileOnSave": false,
+    "filesGlob": [
+        "src/**/*.ts"
+    ],
+    "files": [
+        "src/app.ts",
+        "src/index.ts"
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
+}
