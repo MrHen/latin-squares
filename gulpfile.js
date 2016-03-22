@@ -49,6 +49,7 @@ var locations = {
     deploy: "app/**/*",
     start: "app/app.js",
     bower: "app/bower_components",
+    typings: "typings/browser.d.ts",
 
     inject: {
         dest: 'app',
@@ -129,7 +130,7 @@ gulp.task('build:client:typescript', function () {
     var tsFilter = gulp_filter(locations.filters.typescript); // non-test TypeScript files
 
     var errors = null;
-    var tsResult = gulp.src(locations.sources)
+    var tsResult = gulp.src([locations.sources, locations.typings])
         .pipe(gulp_changed(locations.output, {extension: '.js'}))
         .pipe(tsFilter)
         .pipe(gulp_typescript(tsProject))

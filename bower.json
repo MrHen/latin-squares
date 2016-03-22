@@ -20,6 +20,13 @@
     "tests"
   ],
   "dependencies": {
-    "d3": "~3.5.16"
+    "d3": "~3.5.16",
+    "d3-plugins": "*",
+    "lodash": "~4.6.1"
+  },
+  "overrides": {
+    "d3-plugins": {
+      "main": "hive/hive.js"
+    }
   }
 }
