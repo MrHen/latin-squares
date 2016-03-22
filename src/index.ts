@@ -10,8 +10,14 @@ interface LatinCell {
 }
 
 interface LatinNode {
-  cell: LatinCell;
+  i: number;
+  x: number;
+  y: number;
   guess: number;
+
+  cell: LatinCell;
+
+  solutions: LatinSolution[];
 }
 
 interface LatinAxis {
@@ -38,6 +44,14 @@ interface LatinSolution {
   nodes: LatinNode[];
   s: number;
   valid: boolean;
+}
+
+interface LatinHighlight {
+  x: number;
+  y: number;
+  i: number;
+  guess: number;
+  solutions: number[];
 }
 
 let width = 400;
@@ -119,16 +133,16 @@ let reduced = true;
 let cells: LatinCell[] = buildCells(size, reduced);
 
 // One for each cell + guess combination (n^3 = 64 at size 4)
-let nodes = buildNodes(cells, size);
+let nodes: LatinNode[] = buildNodes(cells, size);
 
-let constraints = buildConstraints(size, nodes);
+let constraints: LatinConstraintMatrix = buildConstraints(size, nodes);
 let dlx = solveWithDancingLinks(constraints, true);
-let solutions = dlx.solutions;
+let solutions: LatinSolution[] = dlx.solutions;
 
 // One for each cell + solution combination (64 at size 4 with 4 solutions)
 let links: LatinLink[] = buildLinks(nodes, solutions);
 
-let highlight = null;
+let highlight: LatinHighlight = null;
 
 interface HiveConfig {
   innerRadius: number;
@@ -591,18 +605,17 @@ function buildLinks(nodes, solutions) {
     return links;
 }
 
-function createHighlight(target?) {
-    // console.log("test", target);
+function createHighlight(target?: LatinNode | LatinCell): LatinHighlight {
     if (!target) {
         return null;
     }
 
-    let highlight = {
-        x: target.x,
-        y: target.y,
-        i: target.i,
-        guess: target.guess || null,
-        solutions: _.map(_.filter(target.solutions, "valid"), "s")
+    let highlight: LatinHighlight = {
+      x: target.x,
+      y: target.y,
+      i: target.i,
+      guess: target.guess || null,
+      solutions: _.map<LatinSolution, number>(_.filter<LatinSolution>(target["solutions"], "valid"), "s")
     };
 
     return highlight;
