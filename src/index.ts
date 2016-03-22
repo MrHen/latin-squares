@@ -5,11 +5,13 @@ interface LatinCell {
   guess?: number;
   hint?: boolean;
   invalid?: boolean;
+
+  nodes: LatinNode[];
 }
 
 interface LatinNode {
   cell: LatinCell;
-  guess: string;
+  guess: number;
 }
 
 interface LatinAxis {
@@ -512,7 +514,8 @@ function buildCells(size, reduced) {
         let cell: LatinCell = {
             i: i,
             x: i % size,
-            y: Math.floor(i / size)
+            y: Math.floor(i / size),
+            nodes: []
         };
 
         if (reduced) {
@@ -530,12 +533,11 @@ function buildCells(size, reduced) {
     });
 }
 
-function buildNodes(cells, size) {
+function buildNodes(cells: LatinCell[], size: number) {
     let nodes = [];
 
     for (let i = 0; i < cells.length; i++) {
         let cell = cells[i];
-        cell.nodes = cell.nodes || [];
 
         for (let guess = 1; guess <= size; guess++) {
             let node = {
@@ -717,7 +719,7 @@ function degrees(radians) {
 // and the linked matrix builder.
 function buildConstraints(data, size, nodes) {
     let sparse = false;
-    let matrix:LatinConstraintMatrix = {};
+    let matrix: LatinConstraintMatrix = {};
 
     // Use the existing data cells instead of three loops so we can prune hints
     nodes.forEach(function(node) {
