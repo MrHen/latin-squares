@@ -45,9 +45,9 @@ interface LatinLink {
 
 interface LatinSolution {
   nodes: LatinNode[];
-  s: number;
+  s?: number;
   success: boolean;
-  valid: boolean;
+  valid?: boolean;
 }
 
 interface LatinHighlight {
@@ -772,7 +772,11 @@ function buildConstraints(size: number, nodes: LatinNode[]) {
 }
 
 interface DlxLink {
-  name?: string;
+  name: string;
+  size?: number;
+  col?: DlxLink;
+  node?: LatinNode;
+
   down: DlxLink;
   up: DlxLink;
   left: DlxLink;
@@ -791,8 +795,8 @@ interface DlxTree {
 ////// Adapted from http://taeric.github.io/DancingLinks.html
 function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_showSteps: boolean) {
     let dlx_headers: DlxLink;
-    let dlx_solutions = [];
-    let dlx_O = [];
+    let dlx_solutions: LatinSolution[] = [];
+    let dlx_O: LatinNode[] = [];
     let dlx_current: DlxTree = {
         parent: null,
         children: [],
@@ -800,8 +804,8 @@ function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_show
         node: null
     };
 
-    function dlx_search(k) {
-        let c, r;
+    function dlx_search(k: number) {
+        let c: DlxLink, r: DlxLink;
         if (dlx_showSteps || dlx_headers.right === dlx_headers) {
             let solution = {
                 nodes: _.sortBy(dlx_O, "i"),
@@ -845,7 +849,7 @@ function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_show
         dlx_uncover(c);
     }
 
-    function dlx_cover(c) {
+    function dlx_cover(c: DlxLink) {
         let r = c.down;
         c.right.left = c.left;
         c.left.right = c.right;
@@ -861,7 +865,7 @@ function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_show
         }
     }
 
-    function dlx_uncover(c) {
+    function dlx_uncover(c: DlxLink) {
         let r = c.up;
         c.right.left = c;
         c.left.right = c;
@@ -877,8 +881,8 @@ function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_show
         }
     }
 
-    function dlx_smallestColumn() {
-        let h, c, s = Number.MAX_VALUE;
+    function dlx_smallestColumn(): DlxLink {
+        let h: DlxLink, c: DlxLink, s = Number.MAX_VALUE;
         h = dlx_headers.right;
         while (h !== dlx_headers) {
             if (h.size < s) {
@@ -891,9 +895,9 @@ function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_show
     }
 
     function dlx_initializeHeaders() {
-        let i, j;
+        let i: string, j: string;
 
-        let rowTrackers = {};
+        let rowTrackers: {[index: string]: DlxLink} = {};
 
         dlx_headers = {
             name: "root",
@@ -906,7 +910,7 @@ function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_show
         dlx_headers.left = dlx_headers;
 
         for (i in constraintMatrix) {
-            let curCol = {
+            let curCol: DlxLink = {
                 name: i,
                 right: dlx_headers,
                 left: dlx_headers.left,
@@ -926,7 +930,7 @@ function solveWithDancingLinks(constraintMatrix: LatinConstraintMatrix, dlx_show
                 if (!value || constraint.skip) {
                     continue;
                 }
-                let curRow = {
+                let curRow: DlxLink = {
                     name: j,
                     node: constraint.node,
                     right: null,
