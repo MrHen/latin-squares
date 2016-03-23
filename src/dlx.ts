@@ -53,7 +53,7 @@ namespace dlx {
             let c: DlxLink<T>, r: DlxLink<T>;
             if (dlx_showSteps || dlx_headers.right === dlx_headers) {
                 let solution = {
-                    nodes: _.sortBy(dlx_O, "i"),
+                    nodes: _.clone(dlx_O),
                     success: dlx_headers.right === dlx_headers
                 };
 
