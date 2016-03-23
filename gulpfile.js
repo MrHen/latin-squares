@@ -235,6 +235,6 @@ gulp.task('test', function(callback) {
 });
 
 gulp.task('test:run', ['build:client', 'build:test'], function() {
-    return gulp.src([locations.test])
-        .pipe(gulp_spawn_mocha(configs.mocha));
+//     return gulp.src([locations.test])
+//         .pipe(gulp_spawn_mocha(configs.mocha));
 });
