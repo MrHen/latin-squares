@@ -14,8 +14,11 @@
     ],
     "files": [
         "src/app.ts",
+        "src/builder.ts",
+        "src/colors.ts",
         "src/d3hive.d.ts",
         "src/dlx.ts",
+        "src/draw.ts",
         "src/index.ts",
         "typings/browser.d.ts"
     ],
