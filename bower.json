@@ -1,0 +1,32 @@
+{
+  "name": "latin-squares",
+  "version": "1.0.0",
+  "homepage": "https://github.com/MrHen/latin-squares",
+  "authors": [
+    "Adam Babcock"
+  ],
+  "description": "Latin Squares Visualization",
+  "main": "app/index.html",
+  "moduleType": [
+    "node"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "d3": "~3.5.16",
+    "d3-plugins": "*",
+    "lodash": "~4.6.1"
+  },
+  "overrides": {
+    "d3-plugins": {
+      "main": "hive/hive.js"
+    }
+  }
+}
