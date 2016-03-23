@@ -205,10 +205,8 @@ namespace dlx {
         }
 
         dlx_initializeHeaders();
-        // console.log("headers ", dlx_headers);
         dlx_search(0);
 
-        console.log("current", dlx_current);
         return {
             tree: dlx_current,
             solutions: dlx_solutions

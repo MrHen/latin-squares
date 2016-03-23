@@ -561,7 +561,7 @@ function buildLinks(nodes: LatinNode[], solutions: LatinSolution[]) {
             continue;
         }
 
-        solution.nodes = _.sortBy(solution.nodes, "i"),
+        solution.nodes = _.sortBy(solution.nodes, "i");
         solution.s = s;
 
         for (let i = 0; i < solution.nodes.length; i++) {

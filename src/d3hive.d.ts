@@ -1,4 +1,3 @@
-
 declare namespace d3 {
   interface D3Hive {
     link: () => D3HiveLink;
