@@ -598,19 +598,26 @@ function createHighlight(target?: LatinNode | LatinCell): LatinHighlight {
     return highlight;
 }
 
-function getColorType(d, highlight: LatinHighlight) {
+function getColorType(d: LatinNode | LatinCell, highlight: LatinHighlight) {
+    function isNode(d: LatinNode | LatinCell): d is LatinNode {
+      return !!d["cell"];
+    }
+
+    let node: LatinNode = isNode(d) ? d : null;
+    let cell: LatinCell = isNode(d) ? d.cell : d;
+
     let isNeighborX = highlight && highlight.x === d.x;
     let isNeighborY = highlight && highlight.y === d.y;
     let isNeighborI = highlight && highlight.i === d.i;
-    let isNeighborGuess = highlight && highlight.guess && highlight.guess === d.guess;
+    let isNeighborGuess = highlight && highlight.guess === d.guess;
 
-    let isHint = (d.cell && d.cell.hint) || d.hint;
-    let isChange = highlight && d.cell && d.cell.guess && d.cell.guess !== highlight.guess;
-    let isInvalid = d.solutions && !_.filter(d.solutions, "valid").length;
-    let isBad = d.invalid || (d.cell && d.cell.invalid && d.cell.guess === d.guess);
+    let isHint = cell.hint;
+    let isChange = highlight && cell.guess && cell.guess !== highlight.guess;
+    let isInvalid = node && !_.filter(node.solutions, "valid").length;
+    let isBad = cell.invalid && (!node || (node && cell.guess === d.guess));
 
     // if d.cell is missing, we have to "aggregate" results
-    let isCellGuess = !d.cell && d.guess;
+    let isCellGuess = !node && d.guess;
 
     if (isBad) {
         return "bad";
@@ -622,7 +629,7 @@ function getColorType(d, highlight: LatinHighlight) {
         }
     }
 
-    if (d.cell && d.cell.guess === d.guess) {
+    if (node && node.cell.guess === d.guess) {
         if (!highlight) {
             if (isHint) {
                 return "hint";
@@ -657,7 +664,7 @@ function getColorType(d, highlight: LatinHighlight) {
     }
 
     if (isNeighborI) {
-        if (!d.cell) {
+        if (!node) {
             return "focus";
         }
 
