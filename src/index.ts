@@ -1,63 +1,59 @@
 /// <reference path="./dlx.ts" />
 
 interface LatinCell {
-  i: number;
-  x: number;
-  y: number;
-  guess: number;
-  hint: boolean;
-  invalid?: boolean;
+    i: number;
+    x: number;
+    y: number;
+    guess: number;
+    hint: boolean;
+    invalid?: boolean;
 
-  nodes: LatinNode[];
+    nodes: LatinNode[];
 }
 
 interface LatinNode {
-  i: number;
-  x: number;
-  y: number;
-  guess: number;
+    i: number;
+    x: number;
+    y: number;
+    guess: number;
 
-  cell: LatinCell;
+    cell: LatinCell;
 
-  solutions: LatinSolution[];
-}
-
-interface LatinAxis {
-
+    solutions: LatinSolution[];
 }
 
 interface LatinConstraint {
-  inner: string;
-  node: LatinNode;
-  outer: string;
-  skip: boolean;
-  value: boolean;
+    inner: string;
+    node: LatinNode;
+    outer: string;
+    skip: boolean;
+    value: boolean;
 }
 
 interface LatinConstraintMatrix {
-  [outer: string]: {
-    [inner: string]: LatinConstraint;
-  };
+    [outer: string]: {
+        [inner: string]: LatinConstraint;
+    };
 }
 
 interface LatinLink {
-  key: string;
-  solution: LatinSolution;
+    key: string;
+    solution: LatinSolution;
 }
 
 interface LatinSolution {
-  nodes: LatinNode[];
-  s?: number;
-  success: boolean;
-  valid?: boolean;
+    nodes: LatinNode[];
+    s?: number;
+    success: boolean;
+    valid?: boolean;
 }
 
 interface LatinHighlight {
-  x: number;
-  y: number;
-  i: number;
-  guess: number;
-  solutions: number[];
+    x: number;
+    y: number;
+    i: number;
+    guess: number;
+    solutions: number[];
 }
 
 let width = 400;
@@ -151,12 +147,12 @@ let links: LatinLink[] = buildLinks(nodes, solutions);
 let highlight: LatinHighlight = null;
 
 interface HiveConfig {
-  innerRadius: number;
-  outerRadius: number;
-  guessExtent: [number, number];
-  angle: any;
-  radius: any;
-  link: d3.D3HiveLink;
+    innerRadius: number;
+    outerRadius: number;
+    guessExtent: [number, number];
+    angle: any;
+    radius: any;
+    link: d3.D3HiveLink;
 }
 
 let hiveConfig: HiveConfig = {
@@ -588,11 +584,11 @@ function createHighlight(target?: LatinNode | LatinCell): LatinHighlight {
     }
 
     let highlight: LatinHighlight = {
-      x: target.x,
-      y: target.y,
-      i: target.i,
-      guess: target.guess || null,
-      solutions: _.map<LatinSolution, number>(_.filter<LatinSolution>(target["solutions"], "valid"), "s")
+        x: target.x,
+        y: target.y,
+        i: target.i,
+        guess: target.guess || null,
+        solutions: _.map<LatinSolution, number>(_.filter<LatinSolution>(target["solutions"], "valid"), "s")
     };
 
     return highlight;
@@ -692,15 +688,15 @@ function getColorType(d: LatinNode | LatinCell, highlight: LatinHighlight) {
     return "non-neighbor";
 }
 
-function getColor(d, highlight: LatinHighlight): string {
+function getColor(d: LatinNode | LatinCell, highlight: LatinHighlight): string {
     return colors[getColorType(d, highlight)];
 }
 
-function getBorderColor(d, highlight: LatinHighlight): string {
+function getBorderColor(d: LatinNode | LatinCell, highlight: LatinHighlight): string {
     return borders[getColorType(d, highlight)];
 }
 
-function getTextColor(d, highlight: LatinHighlight): string {
+function getTextColor(d: LatinNode | LatinCell, highlight: LatinHighlight): string {
     return textColors[getColorType(d, highlight)];
 }
 
