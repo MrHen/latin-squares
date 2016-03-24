@@ -21,7 +21,8 @@ var configs = {
         //     ignorePath: 'app/'
         // },
         bower: {
-            name: 'bower'
+            name: 'bower',
+            addRootSlash: false
         }
     },
 
