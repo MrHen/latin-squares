@@ -17,41 +17,83 @@
 </head>
 <body>
 
-  <p class="text"><a href="https://en.wikipedia.org/wiki/Latin_square">Latin Squares</a> are mathematical puzzles that require you to fill out a grid of cells in a particular manner: Each column and each row must never repeat a number. If the grid is 4x4, than all numbers
-    between 1 and 4 must be used in each row and column.</p>
+  <p class="text"><a href="https://en.wikipedia.org/wiki/Latin_square">Latin
+    Squares</a> are mathematical puzzles that require you to fill out a grid of
+    cells in a particular manner: Each column and each row must never repeat a
+    number. If the grid is 4x4, than all numbers between 1 and 4 must be used in
+    each row and column.</p>
 
-  <p class="text">There is a large number of puzzles similar to Latin Squares that give you a set of cells and require you to fill them out according to particular rules. This entire family of puzzles belongs to an even <em>larger</em> family of problems known as <a href="https://en.wikipedia.org/wiki/Exact_cover#Exact_hitting_set">exact hitting set problems</a>.</p>
+  <p class="text">There is a large number of puzzles similar to Latin Squares
+    that give you a set of cells and require you to fill them out according to
+    particular rules. This entire family of puzzles belongs to an even
+    <em>larger</em> family of problems known as
+    <a href="https://en.wikipedia.org/wiki/Exact_cover#Exact_hitting_set">exact
+    hitting set problems</a>.</p>
 
-  <p class="text">Once you translate your puzzle into an exact hitting set problem, you can begin using well known algorithms to analyze them. (For example, <a href="https://en.wikipedia.org/wiki/Dancing_Links">Dancing Links</a> and <a href="https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X">Algorithm X</a>.)
-    The giant constraint matrices can be hard to grok so I created three visualizations of a 4x4 Latin Square. All three are linked to the same model &mdash; hovering over a cell in one will show the same cell in each of the others.</p>
+  <p class="text">Once you translate your puzzle into an exact hitting set
+    problem, you can begin using well known algorithms to analyze them. (For
+    example, <a href="https://en.wikipedia.org/wiki/Dancing_Links">Dancing
+    Links</a> and
+    <a href="https://en.wikipedia.org/wiki/Knuth%27s_Algorithm_X">Algorithm X</a>.)
+    The giant constraint matrices can be hard to grok so I created three
+    visualizations of a 4x4 Latin Square. All three are linked to the same model
+    &mdash; hovering over a cell in one will show the same cell in each of the
+    others.</p>
 
   <hr class="text" />
 
-  <p class="text">The standard representation of a Latin Square is the 4x4 grid. It has been snapped to the top right for visibility. Click to cycle through guesses for a particular cell &mdash; if you end up with an invalid combination it will highlight the problem. Hovering
-    will highlight row and column relationships.</p>
+  <p class="text">The standard representation of a Latin Square is the 4x4 grid.
+    It has been snapped to the top right for visibility. Click to cycle through
+    guesses for a particular cell &mdash; if you end up with an invalid
+    combination it will highlight the problem. Hovering will highlight row and
+    column relationships.</p>
 
-  <p class="text">The first row and column are filled out with <code>1 2 3 4</code> in order to limit the puzzle to its <a href="https://en.wikipedia.org/wiki/Latin_square#Reduced_form">reduced form</a>.</p>
+  <p class="text">The first row and column are filled out with
+    <code>1 2 3 4</code> in order to limit the puzzle to its
+    <a href="https://en.wikipedia.org/wiki/Latin_square#Reduced_form">reduced
+    form</a>.</p>
 
   <div id="latin-squares-container" class="chart"></div>
 
   <hr class="text" />
 
-  <p class="text">This <a href="https://bl.ocks.org/mbostock/2066415">hive plot</a> shows each cell/guess combination as its own node. Each axis is one cell and the nodes along the line represent guesses for that cell. Grey nodes are still valid and invalid options are
-    empty. Hover to highlight row, column and guess relationships.</p>
+  <p class="text">This <a href="https://bl.ocks.org/mbostock/2066415">hive
+    plot</a> shows each cell/guess combination as its own node. Each axis is one
+    cell and the nodes along the line represent guesses for that cell. Grey
+    nodes are still valid and invalid options are empty. Hover to highlight row,
+    column and guess relationships.</p>
 
-  <p class="text">The colored links represent the four distinct solutions remaining for the Latin Square. As you fill out the Latin Square it will hide the elminated solutions &mdash; you can also hover over a node to only show remaining solutions that contain that cell/guess
-    pair.</p>
+  <p class="text">The colored links represent the four distinct solutions
+    remaining for the Latin Square. As you fill out the Latin Square it will
+    hide the elminated solutions &mdash; you can also hover over a node to only
+    show remaining solutions that contain that cell/guess pair.</p>
 
   <div id="hive-chart-container" class="chart"></div>
 
   <hr class="text" />
 
-  <p class="text">This matrix shows all constraints and their relationships. These represent the information fed into Algorithm X. A black square is a locked in guess; a grey square is still a valid potential guess; white squares with borders are no longer valid but could
-    be if we had a different state in the square. A white square with no border is never considered by the algorithm. (For instance, <code>R1C1#1</code> and <code>R1#2</code> are fundamentally incompatible constraints.)</p>
+  <p class="text">This matrix shows all constraints and their relationships.
+    These represent the information fed into Algorithm X. A black square is a
+    recorded guess; a grey square is still a valid potential guess; white
+    squares with borders are no longer valid but could be if we had a different
+    state in the square. A white square with no border is never considered by
+    the algorithm. (For instance, <code>R1C1#1</code> and <code>R1#2</code> are
+    fundamentally incompatible constraints.)</p>
 
-  <p class="text">Hovering on a square will show the same row, column and guess relationships as the other visualizations. Each cell/guess combination matches exactly one row constraint (e.g., <code>R1C1#1</code> and three column constraints (e.g., <code>R1#1</code>, <code>C1#1</code>  and <code>R1C1</code>.)</p>
+  <p class="text">Hovering on a square will show the same row, column and guess
+    relationships as the other visualizations. Each cell/guess combination
+    matches exactly one row constraint (e.g., <code>R1C1#1</code> and three
+    column constraints (e.g., <code>R1#1</code>, <code>C1#1</code> and
+    <code>R1C1</code>.)</p>
 
   <div id="constraints-container" class="chart"></div>
+
+  <hr class="text" />
+
+  <p class="text">While nothing here explicitly explains how Algorithm X works,
+    the <a href="https://github.com/mrhen/latin-squares">source</a> for this
+    page does contain a full implementation of the solver. A better
+    visualization of the algorithm itself deserves its own page.</p>
 
   <div id="text-toggle">
     <button onclick="textToggle()">Toggle all text on this page</button>
