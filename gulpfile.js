@@ -21,7 +21,8 @@ var configs = {
         //     ignorePath: 'app/'
         // },
         bower: {
-            name: 'bower'
+            name: 'bower',
+            addRootSlash: false
         }
     },
 
@@ -97,7 +98,7 @@ gulp.task('clean:typings', function () {
 ////////
 
 gulp.task('watch', ['build:client'], function() {
-    return gulp.watch(locations.sources, configs.watcher, ['build:client:typescript', 'build:client:copy'])
+    return gulp.watch(locations.sources, configs.watcher, ['build:client'])
         .on('change', function (event) {
             gulp_util.log("[" + gulp_util.colors.cyan("watch") + "]", 'File ' + event.path + ' was ' + event.type);
         });
