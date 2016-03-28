@@ -25,8 +25,8 @@ function drawHiveNodes(nodes: LatinNode[]) {
         .style("stroke-width", 1.5);
 
     node.transition().duration(duration)
-        .style("fill", (node) => getColor(node, highlight))
-        .style("stroke", (node) => getBorderColor(node, highlight));
+        .style("fill", (node) => latinColors.getColor(node, highlight))
+        .style("stroke", (node) => latinColors.getBorderColor(node, highlight));
 }
 
 function drawHiveAxes(cells: LatinCell[]) {
@@ -46,7 +46,7 @@ function drawHiveAxes(cells: LatinCell[]) {
 
     line.selectAll("line")
         .transition().duration(duration)
-        .style("stroke", (cell) => getBorderColor(cell, highlight));
+        .style("stroke", (cell) => latinColors.getBorderColor(cell, highlight));
 }
 
 function drawHiveLinks(links: LatinLink[], cells: LatinCell[]) {
@@ -62,7 +62,7 @@ function drawHiveLinks(links: LatinLink[], cells: LatinCell[]) {
         .style("opacity", 0)
         .style("fill", "none")
         .style("stroke-width", 1.5)
-        .style("stroke", (link) => linkColors(link.solution.s));
+        .style("stroke", (link) => latinColors.linkColors(link.solution.s));
 
     link.exit()
         .transition().duration(duration)
@@ -149,11 +149,11 @@ function drawLatin(cells: LatinCell[]) {
     cell.select(".box")
         .transition().duration(duration)
         .attr("stroke", (cell) => {
-            return getBorderColor(cell, highlight);
+            return latinColors.getBorderColor(cell, highlight);
 
         })
         .attr("fill", (cell) => {
-            return getColor(cell, highlight);
+            return latinColors.getColor(cell, highlight);
         });
 
     cell.select(".label")
@@ -169,7 +169,7 @@ function drawLatin(cells: LatinCell[]) {
             return null;
         })
         .attr("fill", (cell) => {
-            return getTextColor(cell, highlight);
+            return latinColors.getTextColor(cell, highlight);
         });
 }
 
@@ -182,7 +182,7 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
 
     let pixelColor = d3.scale.linear<string, number>()
         .domain([0, 1])
-        .range([colors["invalid"], colors["valid"]]);
+        .range([latinColors.colors["invalid"], latinColors.colors["valid"]]);
 
     let flat: LatinConstraint[] = _.flatten<any>(_.map(_.values(constraints), _.values));
     let columnLabels: string[] = _.uniq(_.map<LatinConstraint, string>(flat, columnIndex)).sort();
@@ -233,17 +233,17 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
     pixel.transition().duration(duration)
         .style("stroke", (constraint) => {
             if (!constraint.value) {
-                return borders["filler"];
+                return latinColors.borders["filler"];
             }
 
-            return getBorderColor(constraint.node, highlight);
+            return latinColors.getBorderColor(constraint.node, highlight);
         })
         .style("fill", (constraint) => {
             if (!constraint.value) {
-                return colors["filler"];
+                return latinColors.colors["filler"];
             }
 
-            return getColor(constraint.node, highlight);
+            return latinColors.getColor(constraint.node, highlight);
         });
 
     let columns = constraintsSvg.selectAll("text.column")
