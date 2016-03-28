@@ -1,3 +1,4 @@
+/// <reference path="./square.ts" />
 /// <reference path="./builder.ts" />
 /// <reference path="./dlx.ts" />
 /// <reference path="./colors.ts" />
@@ -25,9 +26,11 @@ let hiveSvg = d3.select("#hive-chart-container")
     .append("g")
     .attr("transform", "translate(" + radius + "," + radius + ")");
 
-let latinSvg = d3.select("#latin-squares-container").append("svg").attr("id", "#latin")
-    .attr("width", side / 2)
-    .attr("height", side / 2);
+let latinSvg = square.createSvg({
+    rootId: "#latin-squares-container",
+    height: side / 2,
+    width: side / 2
+});
 
 let constraintsSvg = d3.select("#constraints-container").append("svg").attr("id", "#constraints")
     .attr("width", width)
