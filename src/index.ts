@@ -40,7 +40,7 @@ let size = 4;
 let reduced = true;
 
 // One for each cell (n^2 = 16 at size 4)
-let cells: LatinCell[] = buildCells(size, reduced);
+let cells: square.LatinCell[] = square.buildCells(size, reduced);
 
 // One for each cell + guess combination (n^3 = 64 at size 4)
 let nodes: LatinNode[] = buildNodes(cells, size);
@@ -91,7 +91,7 @@ function draw() {
 
 // Rerun the solution filtering
 function update() {
-    let picked: LatinCell[] = [];
+    let picked: square.LatinCell[] = [];
     cells.forEach((cell) => {
         if (cell.guess) {
             picked.push(cell);
@@ -133,7 +133,7 @@ function textToggle() {
     });
 }
 
-function createHighlight(target?: LatinNode | LatinCell): LatinHighlight {
+function createHighlight(target?: LatinNode | square.LatinCell): LatinHighlight {
     if (!target) {
         return null;
     }

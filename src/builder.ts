@@ -1,13 +1,3 @@
-interface LatinCell {
-    i: number;
-    x: number;
-    y: number;
-    guess: number;
-    hint: boolean;
-    invalid?: boolean;
-
-    nodes: LatinNode[];
-}
 
 interface LatinNode {
     i: number;
@@ -15,7 +5,7 @@ interface LatinNode {
     y: number;
     guess: number;
 
-    cell: LatinCell;
+    cell: square.LatinCell;
 
     solutions: LatinSolution[];
 }
@@ -46,33 +36,7 @@ interface LatinSolution {
     valid?: boolean;
 }
 
-function buildCells(size: number, reduced: boolean) {
-    return d3.range(size * size).map((i) => {
-        let cell: LatinCell = {
-            i: i,
-            x: i % size,
-            y: Math.floor(i / size),
-            guess: 0,
-            hint: false,
-            nodes: []
-        };
-
-        if (reduced) {
-            if (cell.x === 0) {
-                cell.hint = true;
-                cell.guess = cell.y + 1;
-            }
-            if (cell.y === 0) {
-                cell.hint = true;
-                cell.guess = cell.x + 1;
-            }
-        }
-
-        return cell;
-    });
-}
-
-function buildNodes(cells: LatinCell[], size: number) {
+function buildNodes(cells: square.LatinCell[], size: number) {
     let nodes: LatinNode[] = [];
 
     for (let i = 0; i < cells.length; i++) {

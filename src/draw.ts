@@ -29,7 +29,7 @@ function drawHiveNodes(nodes: LatinNode[]) {
         .style("stroke", (node) => latinColors.getBorderColor(node, highlight));
 }
 
-function drawHiveAxes(cells: LatinCell[]) {
+function drawHiveAxes(cells: square.LatinCell[]) {
     let line = hiveSvg.selectAll(".axis").data(cells);
 
     let newLine = line.enter()
@@ -49,7 +49,7 @@ function drawHiveAxes(cells: LatinCell[]) {
         .style("stroke", (cell) => latinColors.getBorderColor(cell, highlight));
 }
 
-function drawHiveLinks(links: LatinLink[], cells: LatinCell[]) {
+function drawHiveLinks(links: LatinLink[], cells: square.LatinCell[]) {
     let picked = _.filter(cells, "guess");
 
     let link = hiveSvg.selectAll(".link")
@@ -84,7 +84,7 @@ function drawHiveLinks(links: LatinLink[], cells: LatinCell[]) {
         });
 }
 
-function drawLatin(cells: LatinCell[]) {
+function drawLatin(cells: square.LatinCell[]) {
     let height = +latinSvg.attr("height");
     let width = +latinSvg.attr("width");
 
