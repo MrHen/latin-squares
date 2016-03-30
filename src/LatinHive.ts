@@ -48,6 +48,62 @@ namespace LatinHive {
                 .attr("transform", "translate(" + this.config.width / 2 + "," + this.config.height / 2 + ")");
         }
 
+        public buildNodes = (cells: square.LatinCell[]) => {
+            let nodes: LatinNode[] = [];
+
+            for (let i = 0; i < cells.length; i++) {
+                let cell = cells[i];
+
+                for (let guess = 1; guess <= this.config.size; guess++) {
+                    let node = {
+                        i: cell.i,
+                        x: cell.x,
+                        y: cell.y,
+                        cell: cell,
+                        guess: guess,
+                        solutions: []
+                    };
+                    cell.nodes.push(node);
+                    nodes.push(node);
+                }
+            }
+
+            return nodes;
+        };
+
+        public buildLinks = (nodes: LatinNode[], solutions: LatinSolution[]) => {
+            function key(d) {
+                return d.x + ":" + d.y + ":" + d.guess;
+            }
+
+            let links: LatinLink[] = [];
+            for (let s = 0; s < solutions.length; s++) {
+                let solution = solutions[s];
+                if (!solution.success) {
+                    continue;
+                }
+
+                solution.nodes = _.sortBy(solution.nodes, "i");
+                solution.s = s;
+
+                for (let i = 0; i < solution.nodes.length; i++) {
+                    let source = solution.nodes[i];
+                    let target = solution.nodes[(i + 1) % solution.nodes.length];
+
+                    let link = {
+                        key: s + ":" + key(source) + ":" + key(target),
+                        solution: solution,
+                        source: source,
+                        target: target
+                    };
+                    source.solutions.push(solution);
+                    links.push(link);
+                }
+            }
+
+            return links;
+        };
+
         public drawNodes = (nodes: LatinNode[]) => {
             let node = this.svg.selectAll(".node")
                 .data(nodes);
@@ -137,61 +193,5 @@ namespace LatinHive {
 
             return newLinks;
         };
-    }
-
-    export function buildNodes(cells: square.LatinCell[], size: number) {
-        let nodes: LatinNode[] = [];
-
-        for (let i = 0; i < cells.length; i++) {
-            let cell = cells[i];
-
-            for (let guess = 1; guess <= size; guess++) {
-                let node = {
-                    i: cell.i,
-                    x: cell.x,
-                    y: cell.y,
-                    cell: cell,
-                    guess: guess,
-                    solutions: []
-                };
-                cell.nodes.push(node);
-                nodes.push(node);
-            }
-        }
-
-        return nodes;
-    }
-
-    export function buildLinks(nodes: LatinNode[], solutions: LatinSolution[]) {
-        function key(d) {
-            return d.x + ":" + d.y + ":" + d.guess;
-        }
-
-        let links: LatinLink[] = [];
-        for (let s = 0; s < solutions.length; s++) {
-            let solution = solutions[s];
-            if (!solution.success) {
-                continue;
-            }
-
-            solution.nodes = _.sortBy(solution.nodes, "i");
-            solution.s = s;
-
-            for (let i = 0; i < solution.nodes.length; i++) {
-                let source = solution.nodes[i];
-                let target = solution.nodes[(i + 1) % solution.nodes.length];
-
-                let link = {
-                    key: s + ":" + key(source) + ":" + key(target),
-                    solution: solution,
-                    source: source,
-                    target: target
-                };
-                source.solutions.push(solution);
-                links.push(link);
-            }
-        }
-
-        return links;
     }
 }
