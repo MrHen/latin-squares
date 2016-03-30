@@ -113,14 +113,6 @@ namespace LatinHive {
                 .attr("class", "node")
                 .attr("transform", (node) => {
                     return "rotate(" + degrees(hiveConfig.angle(node.cell.i)) + ")translate(" + hiveConfig.radius(node.guess) + ",0)";
-                })
-                .on("mouseover", (node) => {
-                    highlight = createHighlight(node);
-                    draw();
-                })
-                .on("mouseout", (node) => {
-                    highlight = createHighlight();
-                    draw();
                 });
 
             newNodes.append("circle")

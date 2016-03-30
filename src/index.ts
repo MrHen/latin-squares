@@ -27,9 +27,9 @@ let latinSquare = new square.LatinSquare({
 });
 
 let latinHive = new LatinHive.LatinHive({
-  height: side,
-  rootId: "#hive-chart-container",
-  width: side
+    height: side,
+    rootId: "#hive-chart-container",
+    width: side
 });
 
 let constraintsSvg = d3.select("#constraints-container").append("svg").attr("id", "#constraints")
@@ -84,28 +84,37 @@ draw();
 function draw() {
     latinHive.drawLinks(links, cells);
     latinHive.drawAxes(cells);
-    latinHive.drawNodes(nodes);
+
+    latinHive.drawNodes(nodes)
+        .on("mouseover", (node) => {
+            highlight = createHighlight(node);
+            draw();
+        })
+        .on("mouseout", (node) => {
+            highlight = createHighlight();
+            draw();
+        });
 
     latinSquare.drawLatin(cells)
-      .on("mouseover", (cell) => {
-          highlight = createHighlight(cell);
-          draw();
-      })
-      .on("mouseout", (cell) => {
-          highlight = createHighlight();
-          draw();
-      })
-      .on("click", (cell) => {
-          console.log("cell debug", cell);
+        .on("mouseover", (cell) => {
+            highlight = createHighlight(cell);
+            draw();
+        })
+        .on("mouseout", (cell) => {
+            highlight = createHighlight();
+            draw();
+        })
+        .on("click", (cell) => {
+            console.log("cell debug", cell);
 
-          if (!cell.hint) {
-              cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
+            if (!cell.hint) {
+                cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
 
-              update();
-              highlight = createHighlight(cell);
-              draw();
-          }
-      });
+                update();
+                highlight = createHighlight(cell);
+                draw();
+            }
+        });
 
     drawConstraints(constraints);
 }
