@@ -1,6 +1,4 @@
 namespace square {
-    let latinSvg: d3.Selection<LatinCell>;
-
     export interface SquareConfig {
         id?: string;
         height?: number;
@@ -72,8 +70,9 @@ namespace square {
         };
 
         public drawLatin = (cells: square.LatinCell[]) => {
-            let height = +latinSvg.attr("height");
-            let width = +latinSvg.attr("width");
+            let height = +this.svg.attr("height");
+            let width = +this.svg.attr("width");
+            let size = this.config.size;
 
             let margin = 10;
             let maxWidth = (width - margin * 2) / size;
@@ -86,7 +85,7 @@ namespace square {
                 return (x) * (cellSize + cellSpacing) + margin;
             };
 
-            let cell = latinSvg.selectAll(".cell")
+            let cell = this.svg.selectAll(".cell")
                 .data(cells);
 
             let newCells = cell.enter()
@@ -96,25 +95,6 @@ namespace square {
                 .attr("height", cellSize)
                 .attr("transform", (cell) => {
                     return "translate(" + offset(cell.x) + "," + offset(cell.y) + ")";
-                })
-                .on("mouseover", (cell) => {
-                    highlight = createHighlight(cell);
-                    draw();
-                })
-                .on("mouseout", (cell) => {
-                    highlight = createHighlight();
-                    draw();
-                })
-                .on("click", (cell) => {
-                    console.log("cell debug", cell);
-
-                    if (!cell.hint) {
-                        cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
-
-                        update();
-                        highlight = createHighlight(cell);
-                        draw();
-                    }
                 });
 
             newCells.append("rect")
@@ -158,6 +138,8 @@ namespace square {
                 .attr("fill", (cell) => {
                     return latinColors.getTextColor(cell, highlight);
                 });
+
+            return newCells;
         };
     }
 }

@@ -85,7 +85,28 @@ function draw() {
     drawHiveLinks(links, cells);
     drawHiveAxes(cells);
     drawHiveNodes(nodes);
-    latinSquare.drawLatin(cells);
+
+    latinSquare.drawLatin(cells)
+      .on("mouseover", (cell) => {
+          highlight = createHighlight(cell);
+          draw();
+      })
+      .on("mouseout", (cell) => {
+          highlight = createHighlight();
+          draw();
+      })
+      .on("click", (cell) => {
+          console.log("cell debug", cell);
+
+          if (!cell.hint) {
+              cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
+
+              update();
+              highlight = createHighlight(cell);
+              draw();
+          }
+      });
+
     drawConstraints(constraints);
 }
 
