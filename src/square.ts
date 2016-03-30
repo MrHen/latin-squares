@@ -16,7 +16,7 @@ namespace square {
         hint: boolean;
         invalid?: boolean;
 
-        nodes: LatinNode[];
+        nodes: LatinHive.LatinNode[];
     }
 
     export class LatinSquare {

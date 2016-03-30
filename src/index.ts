@@ -1,4 +1,5 @@
 /// <reference path="./square.ts" />
+/// <reference path="./LatinHive.ts" />
 /// <reference path="./builder.ts" />
 /// <reference path="./dlx.ts" />
 /// <reference path="./colors.ts" />
@@ -43,14 +44,14 @@ let reduced = true;
 let cells: square.LatinCell[] = latinSquare.build();
 
 // One for each cell + guess combination (n^3 = 64 at size 4)
-let nodes: LatinNode[] = buildNodes(cells, size);
+let nodes: LatinHive.LatinNode[] = LatinHive.buildNodes(cells, size);
 
 let constraints: LatinConstraintMatrix = buildConstraints(size, nodes);
 let result = dlx.solveWithDancingLinks(constraints, true);
 let solutions: LatinSolution[] = result.solutions;
 
 // One for each cell + solution combination (64 at size 4 with 4 solutions)
-let links: LatinLink[] = buildLinks(nodes, solutions);
+let links: LatinHive.LatinLink[] = LatinHive.buildLinks(nodes, solutions);
 
 let highlight: LatinHighlight = null;
 
@@ -82,9 +83,9 @@ update();
 draw();
 
 function draw() {
-    drawHiveLinks(links, cells);
-    drawHiveAxes(cells);
-    drawHiveNodes(nodes);
+    LatinHive.drawHiveLinks(links, cells);
+    LatinHive.drawHiveAxes(cells);
+    LatinHive.drawHiveNodes(nodes);
 
     latinSquare.drawLatin(cells)
       .on("mouseover", (cell) => {
@@ -154,7 +155,7 @@ function textToggle() {
     });
 }
 
-function createHighlight(target?: LatinNode | square.LatinCell): LatinHighlight {
+function createHighlight(target?: LatinHive.LatinNode | square.LatinCell): LatinHighlight {
     if (!target) {
         return null;
     }

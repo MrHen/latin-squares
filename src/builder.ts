@@ -1,18 +1,8 @@
-
-interface LatinNode {
-    i: number;
-    x: number;
-    y: number;
-    guess: number;
-
-    cell: square.LatinCell;
-
-    solutions: LatinSolution[];
-}
+/// <reference path="./LatinHive.ts" />
 
 interface LatinConstraint {
     inner: string;
-    node: LatinNode;
+    node: LatinHive.LatinNode;
     outer: string;
     skip: boolean;
     value: boolean;
@@ -24,72 +14,11 @@ interface LatinConstraintMatrix {
     };
 }
 
-interface LatinLink {
-    key: string;
-    solution: LatinSolution;
-}
-
 interface LatinSolution {
-    nodes: LatinNode[];
+    nodes: LatinHive.LatinNode[];
     s?: number;
     success: boolean;
     valid?: boolean;
-}
-
-function buildNodes(cells: square.LatinCell[], size: number) {
-    let nodes: LatinNode[] = [];
-
-    for (let i = 0; i < cells.length; i++) {
-        let cell = cells[i];
-
-        for (let guess = 1; guess <= size; guess++) {
-            let node = {
-                i: cell.i,
-                x: cell.x,
-                y: cell.y,
-                cell: cell,
-                guess: guess,
-                solutions: []
-            };
-            cell.nodes.push(node);
-            nodes.push(node);
-        }
-    }
-
-    return nodes;
-}
-
-function buildLinks(nodes: LatinNode[], solutions: LatinSolution[]) {
-    function key(d) {
-        return d.x + ":" + d.y + ":" + d.guess;
-    }
-
-    let links: LatinLink[] = [];
-    for (let s = 0; s < solutions.length; s++) {
-        let solution = solutions[s];
-        if (!solution.success) {
-            continue;
-        }
-
-        solution.nodes = _.sortBy(solution.nodes, "i");
-        solution.s = s;
-
-        for (let i = 0; i < solution.nodes.length; i++) {
-            let source = solution.nodes[i];
-            let target = solution.nodes[(i + 1) % solution.nodes.length];
-
-            let link = {
-                key: s + ":" + key(source) + ":" + key(target),
-                solution: solution,
-                source: source,
-                target: target
-            };
-            source.solutions.push(solution);
-            links.push(link);
-        }
-    }
-
-    return links;
 }
 
 // Generate a suitable constraints matrix. Columns are the outer dimension
@@ -98,7 +27,7 @@ function buildLinks(nodes: LatinNode[], solutions: LatinSolution[]) {
 // Dancing links will convert these to a linked matrix but it is a little
 // easier to grok what is happening if we split up the constraint generation
 // and the linked matrix builder.
-function buildConstraints(size: number, nodes: LatinNode[]) {
+function buildConstraints(size: number, nodes: LatinHive.LatinNode[]) {
     let sparse = false;
     let matrix: LatinConstraintMatrix = {};
 
