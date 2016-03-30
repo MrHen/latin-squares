@@ -21,139 +21,143 @@ namespace square {
         nodes: LatinNode[];
     }
 
-    let savedConfig: SquareConfig = {
-        height: 400,
-        id: "#latin",
-        reduced: true,
-        rootId: "#latin-squares-container",
-        size: 4,
-        width: 400
-    };
-
-    export function init(config?: SquareConfig) {
-        _.assign(savedConfig, config);
-
-        latinSvg = d3.select(savedConfig.rootId)
-            .append("svg")
-            .attr("id", savedConfig.id)
-            .attr("width", savedConfig.width)
-            .attr("height", savedConfig.height);
-
-        return latinSvg;
-    }
-
-    export function buildCells() {
-        return d3.range(savedConfig.size * savedConfig.size).map((i) => {
-            let cell: LatinCell = {
-                i: i,
-                x: i % savedConfig.size,
-                y: Math.floor(i / savedConfig.size),
-                guess: 0,
-                hint: false,
-                nodes: []
-            };
-
-            if (savedConfig.reduced) {
-                if (cell.x === 0) {
-                    cell.hint = true;
-                    cell.guess = cell.y + 1;
-                }
-                if (cell.y === 0) {
-                    cell.hint = true;
-                    cell.guess = cell.x + 1;
-                }
-            }
-
-            return cell;
-        });
-    }
-
-    export function drawLatin(cells: square.LatinCell[]) {
-        let height = +latinSvg.attr("height");
-        let width = +latinSvg.attr("width");
-
-        let margin = 10;
-        let maxWidth = (width - margin * 2) / size;
-        let maxHeight = (height - margin * 2) / size;
-
-        let cellSpacing = 2;
-        let cellSize = Math.min(maxWidth, maxHeight) - cellSpacing;
-
-        let offset = (x) => {
-            return (x) * (cellSize + cellSpacing) + margin;
+    export class LatinSquare {
+        private static defaultConfig: SquareConfig = {
+            height: 400,
+            id: "#latin",
+            reduced: true,
+            rootId: "#latin-squares-container",
+            size: 4,
+            width: 400
         };
 
-        let cell = latinSvg.selectAll(".cell")
-            .data(cells);
+        private config: SquareConfig;
 
-        let newCells = cell.enter()
-            .append("g")
-            .attr("class", "cell")
-            .attr("width", cellSize)
-            .attr("height", cellSize)
-            .attr("transform", (cell) => {
-                return "translate(" + offset(cell.x) + "," + offset(cell.y) + ")";
-            })
-            .on("mouseover", (cell) => {
-                highlight = createHighlight(cell);
-                draw();
-            })
-            .on("mouseout", (cell) => {
-                highlight = createHighlight();
-                draw();
-            })
-            .on("click", (cell) => {
-                console.log("cell debug", cell);
+        private svg: d3.Selection<LatinCell>;
 
-                if (!cell.hint) {
-                    cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
+        constructor(config?: SquareConfig) {
+            this.config = _.defaults({}, config, LatinSquare.defaultConfig);
 
-                    update();
+            this.svg = d3.select(this.config.rootId)
+                .append("svg")
+                .attr("id", this.config.id)
+                .attr("width", this.config.width)
+                .attr("height", this.config.height);
+        }
+
+        public build = () => {
+            return d3.range(this.config.size * this.config.size).map((i) => {
+                let cell: LatinCell = {
+                    i: i,
+                    x: i % this.config.size,
+                    y: Math.floor(i / this.config.size),
+                    guess: 0,
+                    hint: false,
+                    nodes: []
+                };
+
+                if (this.config.reduced) {
+                    if (cell.x === 0) {
+                        cell.hint = true;
+                        cell.guess = cell.y + 1;
+                    }
+                    if (cell.y === 0) {
+                        cell.hint = true;
+                        cell.guess = cell.x + 1;
+                    }
+                }
+
+                return cell;
+            });
+        }
+
+        public drawLatin = (cells: square.LatinCell[]) => {
+            let height = +latinSvg.attr("height");
+            let width = +latinSvg.attr("width");
+
+            let margin = 10;
+            let maxWidth = (width - margin * 2) / size;
+            let maxHeight = (height - margin * 2) / size;
+
+            let cellSpacing = 2;
+            let cellSize = Math.min(maxWidth, maxHeight) - cellSpacing;
+
+            let offset = (x) => {
+                return (x) * (cellSize + cellSpacing) + margin;
+            };
+
+            let cell = latinSvg.selectAll(".cell")
+                .data(cells);
+
+            let newCells = cell.enter()
+                .append("g")
+                .attr("class", "cell")
+                .attr("width", cellSize)
+                .attr("height", cellSize)
+                .attr("transform", (cell) => {
+                    return "translate(" + offset(cell.x) + "," + offset(cell.y) + ")";
+                })
+                .on("mouseover", (cell) => {
                     highlight = createHighlight(cell);
                     draw();
-                }
-            });
+                })
+                .on("mouseout", (cell) => {
+                    highlight = createHighlight();
+                    draw();
+                })
+                .on("click", (cell) => {
+                    console.log("cell debug", cell);
 
-        newCells.append("rect")
-            .attr("class", "box")
-            .attr("fill", "white")
-            .attr("stroke", "grey")
-            .attr("width", cellSize)
-            .attr("height", cellSize);
+                    if (!cell.hint) {
+                        cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
 
-        newCells.append("text")
-            .attr("class", "label")
-            .attr("text-anchor", "middle")
-            .style("font-size", cellSize * 0.3)
-            .attr("dominant-baseline", "central")
-            .attr("transform", (cell) => {
-                return "translate(" + cellSize / 2 + "," + cellSize / 2 + ")";
-            });
+                        update();
+                        highlight = createHighlight(cell);
+                        draw();
+                    }
+                });
 
-        cell.select(".box")
-            .transition().duration(duration)
-            .attr("stroke", (cell) => {
-                return latinColors.getBorderColor(cell, highlight);
+            newCells.append("rect")
+                .attr("class", "box")
+                .attr("fill", "white")
+                .attr("stroke", "grey")
+                .attr("width", cellSize)
+                .attr("height", cellSize);
 
-            })
-            .attr("fill", (cell) => {
-                return latinColors.getColor(cell, highlight);
-            });
+            newCells.append("text")
+                .attr("class", "label")
+                .attr("text-anchor", "middle")
+                .style("font-size", cellSize * 0.3)
+                .attr("dominant-baseline", "central")
+                .attr("transform", (cell) => {
+                    return "translate(" + cellSize / 2 + "," + cellSize / 2 + ")";
+                });
 
-        cell.select(".label")
-            .text((cell) => {
-                if (highlight && highlight.i === cell.i) {
-                    return highlight.guess;
-                }
+            cell.select(".box")
+                .transition().duration(duration)
+                .attr("stroke", (cell) => {
+                    return latinColors.getBorderColor(cell, highlight);
 
-                if (cell.guess) {
-                    return cell.guess;
-                }
+                })
+                .attr("fill", (cell) => {
+                    return latinColors.getColor(cell, highlight);
+                });
 
-                return null;
-            })
-            .attr("fill", (cell) => {
-                return latinColors.getTextColor(cell, highlight);
-            });
+            cell.select(".label")
+                .text((cell) => {
+                    if (highlight && highlight.i === cell.i) {
+                        return highlight.guess;
+                    }
+
+                    if (cell.guess) {
+                        return cell.guess;
+                    }
+
+                    return null;
+                })
+                .attr("fill", (cell) => {
+                    return latinColors.getTextColor(cell, highlight);
+                });
+        }
     }
 }

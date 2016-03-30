@@ -19,7 +19,7 @@ let radius = side / 2;
 
 let duration = 300;
 
-square.init({
+let latinSquare = new square.LatinSquare({
     height: side / 2,
     rootId: "#latin-squares-container",
     width: side / 2
@@ -40,7 +40,7 @@ let size = 4;
 let reduced = true;
 
 // One for each cell (n^2 = 16 at size 4)
-let cells: square.LatinCell[] = square.buildCells();
+let cells: square.LatinCell[] = latinSquare.build();
 
 // One for each cell + guess combination (n^3 = 64 at size 4)
 let nodes: LatinNode[] = buildNodes(cells, size);
@@ -85,7 +85,7 @@ function draw() {
     drawHiveLinks(links, cells);
     drawHiveAxes(cells);
     drawHiveNodes(nodes);
-    square.drawLatin(cells);
+    latinSquare.drawLatin(cells);
     drawConstraints(constraints);
 }
 
