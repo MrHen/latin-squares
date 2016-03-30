@@ -20,8 +20,8 @@ let radius = side / 2;
 let duration = 300;
 
 square.init({
-    rootId: "#latin-squares-container",
     height: side / 2,
+    rootId: "#latin-squares-container",
     width: side / 2
 });
 
@@ -40,7 +40,7 @@ let size = 4;
 let reduced = true;
 
 // One for each cell (n^2 = 16 at size 4)
-let cells: square.LatinCell[] = square.buildCells(size, reduced);
+let cells: square.LatinCell[] = square.buildCells();
 
 // One for each cell + guess combination (n^3 = 64 at size 4)
 let nodes: LatinNode[] = buildNodes(cells, size);

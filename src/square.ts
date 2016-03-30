@@ -4,7 +4,9 @@ namespace square {
     export interface SquareConfig {
         id?: string;
         height?: number;
+        reduced?: boolean;
         rootId?: string;
+        size?: number;
         width?: number;
     }
 
@@ -19,37 +21,39 @@ namespace square {
         nodes: LatinNode[];
     }
 
-    let defaultConfig: SquareConfig = {
-        rootId: "#latin-squares-container",
+    let savedConfig: SquareConfig = {
         height: 400,
         id: "#latin",
+        reduced: true,
+        rootId: "#latin-squares-container",
+        size: 4,
         width: 400
     };
 
     export function init(config?: SquareConfig) {
-        config = _.defaults({}, config, defaultConfig);
+        _.assign(savedConfig, config);
 
-        latinSvg = d3.select(config.rootId)
+        latinSvg = d3.select(savedConfig.rootId)
             .append("svg")
-            .attr("id", config.id)
-            .attr("width", config.width)
-            .attr("height", config.height);
+            .attr("id", savedConfig.id)
+            .attr("width", savedConfig.width)
+            .attr("height", savedConfig.height);
 
         return latinSvg;
     }
 
-    export function buildCells(size: number, reduced: boolean) {
-        return d3.range(size * size).map((i) => {
+    export function buildCells() {
+        return d3.range(savedConfig.size * savedConfig.size).map((i) => {
             let cell: LatinCell = {
                 i: i,
-                x: i % size,
-                y: Math.floor(i / size),
+                x: i % savedConfig.size,
+                y: Math.floor(i / savedConfig.size),
                 guess: 0,
                 hint: false,
                 nodes: []
             };
 
-            if (reduced) {
+            if (savedConfig.reduced) {
                 if (cell.x === 0) {
                     cell.hint = true;
                     cell.guess = cell.y + 1;
