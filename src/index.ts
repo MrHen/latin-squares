@@ -19,18 +19,18 @@ let radius = side / 2;
 
 let duration = 300;
 
+square.init({
+    rootId: "#latin-squares-container",
+    height: side / 2,
+    width: side / 2
+});
+
 let hiveSvg = d3.select("#hive-chart-container")
     .append("svg")
     .attr("width", side)
     .attr("height", side)
     .append("g")
     .attr("transform", "translate(" + radius + "," + radius + ")");
-
-let latinSvg = square.createSvg({
-    rootId: "#latin-squares-container",
-    height: side / 2,
-    width: side / 2
-});
 
 let constraintsSvg = d3.select("#constraints-container").append("svg").attr("id", "#constraints")
     .attr("width", width)
@@ -85,7 +85,7 @@ function draw() {
     drawHiveLinks(links, cells);
     drawHiveAxes(cells);
     drawHiveNodes(nodes);
-    drawLatin(cells);
+    square.drawLatin(cells);
     drawConstraints(constraints);
 }
 
