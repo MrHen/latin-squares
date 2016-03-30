@@ -26,12 +26,11 @@ let latinSquare = new square.LatinSquare({
     width: side / 2
 });
 
-let hiveSvg = d3.select("#hive-chart-container")
-    .append("svg")
-    .attr("width", side)
-    .attr("height", side)
-    .append("g")
-    .attr("transform", "translate(" + radius + "," + radius + ")");
+let latinHive = new LatinHive.LatinHive({
+  height: side,
+  rootId: "#hive-chart-container",
+  width: side
+});
 
 let constraintsSvg = d3.select("#constraints-container").append("svg").attr("id", "#constraints")
     .attr("width", width)
@@ -83,9 +82,9 @@ update();
 draw();
 
 function draw() {
-    LatinHive.drawHiveLinks(links, cells);
-    LatinHive.drawHiveAxes(cells);
-    LatinHive.drawHiveNodes(nodes);
+    latinHive.drawLinks(links, cells);
+    latinHive.drawAxes(cells);
+    latinHive.drawNodes(nodes);
 
     latinSquare.drawLatin(cells)
       .on("mouseover", (cell) => {

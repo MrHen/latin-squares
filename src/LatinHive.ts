@@ -1,4 +1,12 @@
 namespace LatinHive {
+    export interface LatinHiveConfig {
+        id?: string;
+        height?: number;
+        rootId?: string;
+        size?: number;
+        width?: number;
+    }
+
     export interface LatinNode {
         i: number;
         x: number;
@@ -15,88 +23,120 @@ namespace LatinHive {
         solution: LatinSolution;
     }
 
-    export function drawHiveNodes(nodes: LatinNode[]) {
-        let node = hiveSvg.selectAll(".node")
-            .data(nodes);
+    export class LatinHive {
+        private static defaultConfig: LatinHiveConfig = {
+            height: 400,
+            id: "#hive-chart",
+            rootId: "#hive-chart-container",
+            size: 4,
+            width: 400
+        };
 
-        let newNodes = node.enter()
-            .append("g")
-            .attr("class", "node")
-            .attr("transform", (node) => {
-                return "rotate(" + degrees(hiveConfig.angle(node.cell.i)) + ")translate(" + hiveConfig.radius(node.guess) + ",0)";
-            })
-            .on("mouseover", (node) => {
-                highlight = createHighlight(node);
-                draw();
-            })
-            .on("mouseout", (node) => {
-                highlight = createHighlight();
-                draw();
-            });
+        private config: LatinHiveConfig;
 
-        newNodes.append("circle")
-            .attr("class", "inner")
-            .style("r", 5)
-            .style("stroke-width", 1.5);
+        private svg: d3.Selection<LatinNode>;
 
-        node.transition().duration(duration)
-            .style("fill", (node) => latinColors.getColor(node, highlight))
-            .style("stroke", (node) => latinColors.getBorderColor(node, highlight));
-    }
+        constructor(config?: LatinHiveConfig) {
+            this.config = _.defaults({}, config, LatinHive.defaultConfig);
 
-    export function drawHiveAxes(cells: square.LatinCell[]) {
-        let line = hiveSvg.selectAll(".axis").data(cells);
+            this.svg = d3.select(this.config.rootId)
+                .append("svg")
+                .attr("id", this.config.id)
+                .attr("width", this.config.width)
+                .attr("height", this.config.height)
+                .append("g")
+                .attr("transform", "translate(" + this.config.width / 2 + "," + this.config.height / 2 + ")");
+        }
 
-        let newLine = line.enter()
-            .append("g")
-            .attr("class", "axis")
-            .attr("transform", (cell) => {
-                return "rotate(" + degrees(hiveConfig.angle(cell.i)) + ")";
-            });
+        public drawNodes = (nodes: LatinNode[]) => {
+            let node = this.svg.selectAll(".node")
+                .data(nodes);
 
-        newLine.append("line")
-            .style("stroke-width", 1.5)
-            .attr("x1", hiveConfig.radius.range()[0])
-            .attr("x2", _.last<number>(hiveConfig.radius.range()));
+            let newNodes = node.enter()
+                .append("g")
+                .attr("class", "node")
+                .attr("transform", (node) => {
+                    return "rotate(" + degrees(hiveConfig.angle(node.cell.i)) + ")translate(" + hiveConfig.radius(node.guess) + ",0)";
+                })
+                .on("mouseover", (node) => {
+                    highlight = createHighlight(node);
+                    draw();
+                })
+                .on("mouseout", (node) => {
+                    highlight = createHighlight();
+                    draw();
+                });
 
-        line.selectAll("line")
-            .transition().duration(duration)
-            .style("stroke", (cell) => latinColors.getBorderColor(cell, highlight));
-    }
+            newNodes.append("circle")
+                .attr("class", "inner")
+                .style("r", 5)
+                .style("stroke-width", 1.5);
 
-    export function drawHiveLinks(links: LatinLink[], cells: square.LatinCell[]) {
-        let picked = _.filter(cells, "guess");
+            node.transition().duration(duration)
+                .style("fill", (node) => latinColors.getColor(node, highlight))
+                .style("stroke", (node) => latinColors.getBorderColor(node, highlight));
 
-        let link = hiveSvg.selectAll(".link")
-            .data(links, (link) => link.key);
+            return newNodes;
+        };
 
-        link.enter()
-            .append("path")
-            .attr("class", "link")
-            .attr("d", hiveConfig.link)
-            .style("opacity", 0)
-            .style("fill", "none")
-            .style("stroke-width", 1.5)
-            .style("stroke", (link) => latinColors.linkColors(link.solution.s));
+        public drawAxes = (cells: square.LatinCell[]) => {
+            let line = this.svg.selectAll(".axis").data(cells);
 
-        link.exit()
-            .transition().duration(duration)
-            .style("opacity", 0)
-            .remove();
+            let newLine = line.enter()
+                .append("g")
+                .attr("class", "axis")
+                .attr("transform", (cell) => {
+                    return "rotate(" + degrees(hiveConfig.angle(cell.i)) + ")";
+                });
 
-        link.transition().duration(duration)
-            .style("opacity", (link) => {
-                if (!link.solution.valid) {
-                    return 0;
-                }
+            newLine.append("line")
+                .style("stroke-width", 1.5)
+                .attr("x1", hiveConfig.radius.range()[0])
+                .attr("x2", _.last<number>(hiveConfig.radius.range()));
 
-                if (highlight && highlight.solutions.length) {
-                    let match = _.includes(highlight.solutions, link.solution.s);
-                    return match ? 1 : 0;
-                }
+            line.selectAll("line")
+                .transition().duration(duration)
+                .style("stroke", (cell) => latinColors.getBorderColor(cell, highlight));
 
-                return 1;
-            });
+            return newLine;
+        };
+
+        public drawLinks = (links: LatinLink[], cells: square.LatinCell[]) => {
+            let picked = _.filter(cells, "guess");
+
+            let link = this.svg.selectAll(".link")
+                .data(links, (link) => link.key);
+
+            let newLinks = link.enter()
+                .append("path")
+                .attr("class", "link")
+                .attr("d", hiveConfig.link)
+                .style("opacity", 0)
+                .style("fill", "none")
+                .style("stroke-width", 1.5)
+                .style("stroke", (link) => latinColors.linkColors(link.solution.s));
+
+            link.exit()
+                .transition().duration(duration)
+                .style("opacity", 0)
+                .remove();
+
+            link.transition().duration(duration)
+                .style("opacity", (link) => {
+                    if (!link.solution.valid) {
+                        return 0;
+                    }
+
+                    if (highlight && highlight.solutions.length) {
+                        let match = _.includes(highlight.solutions, link.solution.s);
+                        return match ? 1 : 0;
+                    }
+
+                    return 1;
+                });
+
+            return newLinks;
+        };
     }
 
     export function buildNodes(cells: square.LatinCell[], size: number) {
