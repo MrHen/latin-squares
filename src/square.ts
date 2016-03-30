@@ -69,7 +69,7 @@ namespace square {
 
                 return cell;
             });
-        }
+        };
 
         public drawLatin = (cells: square.LatinCell[]) => {
             let height = +latinSvg.attr("height");
@@ -158,6 +158,6 @@ namespace square {
                 .attr("fill", (cell) => {
                     return latinColors.getTextColor(cell, highlight);
                 });
-        }
+        };
     }
 }
