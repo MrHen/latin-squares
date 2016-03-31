@@ -50,7 +50,7 @@ namespace Latin {
         // Dancing links will convert these to a linked matrix but it is a little
         // easier to grok what is happening if we split up the constraint generation
         // and the linked matrix builder.
-        public buildConstraints(size: number, nodes: LatinHive.LatinNode[]) {
+        public build(size: number, nodes: LatinHive.LatinNode[]) {
             let sparse = false;
             let matrix: ConstraintMatrix = {};
 
@@ -117,7 +117,7 @@ namespace Latin {
             return matrix;
         }
 
-        public drawConstraints(constraints: Latin.ConstraintMatrix) {
+        public draw(constraints: Latin.ConstraintMatrix) {
             let height = this.config.height;
             let width = this.config.width;
 
