@@ -117,7 +117,19 @@ function draw() {
             }
         });
 
-    latinConstraints.draw(constraints);
+    latinConstraints.draw(constraints)
+        .on("mouseover", (constraint) => {
+            if (constraint.value) {
+                highlight = createHighlight(constraint.node);
+                draw();
+            }
+        })
+        .on("mouseout", (constraint) => {
+            if (highlight) {
+                highlight = createHighlight();
+                draw();
+            }
+        });
 }
 
 // Rerun the solution filtering

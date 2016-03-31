@@ -152,7 +152,7 @@ namespace Latin {
             let pixel = this.svg.selectAll("rect.pixel")
                 .data(_.filter(flat, "value"));
 
-            pixel.enter()
+            let newPixels = pixel.enter()
                 .append("rect")
                 .attr("class", "pixel")
                 .attr("width", pixelSize)
@@ -160,18 +160,6 @@ namespace Latin {
                 .style("stroke-width", 0.25)
                 .attr("transform", (constraint) => {
                     return "translate(" + offset(_.indexOf(columnLabels, constraint[columnIndex]) + labelOffset) + "," + offset(_.indexOf(rowLabels, constraint[rowIndex]) + labelOffset) + ")";
-                })
-                .on("mouseover", (constraint) => {
-                    if (constraint.value) {
-                        highlight = createHighlight(constraint.node);
-                        draw();
-                    }
-                })
-                .on("mouseout", (constraint) => {
-                    if (highlight) {
-                        highlight = createHighlight();
-                        draw();
-                    }
                 });
 
             pixel.transition().duration(duration)
@@ -217,6 +205,8 @@ namespace Latin {
                 .style("font-family", "monospace")
                 .style("font-size", pixelSize)
                 .text((d) => d);
+
+            return newPixels;
         }
     }
 }
