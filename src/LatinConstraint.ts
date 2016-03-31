@@ -20,6 +20,7 @@ namespace LatinSquare {
         id?: string;
         height?: number;
         rootId?: string;
+        size?: number;
         width?: number;
     }
 
@@ -29,6 +30,7 @@ namespace LatinSquare {
             height: 400,
             id: "#constraints",
             rootId: "#constraints-container",
+            size: 4,
             width: 400
         };
 
@@ -52,7 +54,7 @@ namespace LatinSquare {
         // Dancing links will convert these to a linked matrix but it is a little
         // easier to grok what is happening if we split up the constraint generation
         // and the linked matrix builder.
-        public build(size: number, nodes: LatinSquare.Node[]) {
+        public build(nodes: LatinSquare.Node[]) {
             let sparse = false;
             let matrix: ConstraintMatrix = {};
 
@@ -70,8 +72,8 @@ namespace LatinSquare {
                 }
 
                 let constraint: Constraint;
-                for (let a = 1; a <= size; a++) {
-                    for (let b = 1; b <= size; b++) {
+                for (let a = 1; a <= this.config.size; a++) {
+                    for (let b = 1; b <= this.config.size; b++) {
                         matrix["R" + a + "#" + b] = matrix["R" + a + "#" + b] || {};
                         matrix["C" + a + "#" + b] = matrix["C" + a + "#" + b] || {};
                         matrix["R" + a + "C" + b] = matrix["R" + a + "C" + b] || {};

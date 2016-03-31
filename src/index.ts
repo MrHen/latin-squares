@@ -20,7 +20,9 @@ namespace LatinSquare {
     let latinSquare = new LatinSquare.LatinCell({
         animationDuration: duration,
         height: side / 2,
+        reduced: reduced,
         rootId: "#latin-squares-container",
+        size: size,
         width: side / 2
     });
 
@@ -30,6 +32,7 @@ namespace LatinSquare {
         innerRadius: 20,
         outerRadius: Math.min(height, width) / 2 - 20,
         rootId: "#hive-chart-container",
+        size: size,
         width: side
     });
 
@@ -37,6 +40,7 @@ namespace LatinSquare {
         animationDuration: duration,
         height: height,
         rootId: "#constraints-container",
+        size: size,
         width: width
     });
 
@@ -46,7 +50,26 @@ namespace LatinSquare {
     // One for each cell + guess combination (n^3 = 64 at size 4)
     let nodes: LatinSquare.Node[] = latinHive.buildNodes(cells);
 
-    let constraints: LatinSquare.ConstraintMatrix = latinConstraints.build(size, nodes);
+    // Latin Squares have 4 constraints per node:
+    //
+    // - RyCx#g is the full list of possible guesses (n^3 = 64 at size 4)
+    // - Cx#g limits each column to only one of each guess (n^2)
+    // - Ry#g limits each row to only one of each guess (n^2)
+    // - CxRy limits each cell to only one guess (n^2)
+    //
+    // The largest constraint forms the row index (RyCx#g) and each of the
+    // others are "appended" to each other to form columns (Cx#g, Ry#g, CxRy).
+    //
+    // Therefore, each node will have 3 * n^2 possible columns and n^3 possible
+    // rows for a total of 3 * n^2 * n^3 entries in the matrix. (= 3072 at size
+    // 4).
+    //
+    // The good news is that most of these are irrelevant. The solver only needs
+    // to process row/column constraint that are consistent -- and we know that
+    // each row matches exactly one from each of the other constraints. Instead
+    // of 3 * n^2 possible columns, the solver only looks at 3 possible columns.
+    // Therefore, the solver will only see 3 * n^3 (= 192 at size 4).
+    let constraints: LatinSquare.ConstraintMatrix = latinConstraints.build(nodes);
     let solver = new Dlx.Solver(constraints, true);
     let result = solver.solve();
     let solutions: LatinSquare.Solution[] = result.solutions;
