@@ -1,7 +1,6 @@
 // Adapted from http://taeric.github.io/DancingLinks.html
 namespace dlx {
     export interface DlxLink<T> {
-        name: string;
         size?: number;
         col?: DlxLink<T>;
         node?: T;
@@ -182,7 +181,6 @@ namespace dlx {
             let rowTrackers: { [index: string]: DlxLink<T> } = {};
 
             this.root = {
-                name: "root",
                 right: null,
                 left: null,
                 up: null,
@@ -193,7 +191,6 @@ namespace dlx {
 
             for (i in this.constraintMatrix) {
                 let curCol: DlxLink<T> = {
-                    name: i,
                     right: this.root,
                     left: this.root.left,
                     size: 0,
@@ -213,7 +210,6 @@ namespace dlx {
                         continue;
                     }
                     let curRow: DlxLink<T> = {
-                        name: j,
                         node: constraint.node,
                         right: null,
                         left: null,
