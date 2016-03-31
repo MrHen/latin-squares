@@ -1,5 +1,5 @@
-namespace square {
-    export interface SquareConfig {
+namespace LatinSquare {
+    export interface CellConfig {
         id?: string;
         height?: number;
         reduced?: boolean;
@@ -8,7 +8,7 @@ namespace square {
         width?: number;
     }
 
-    export interface LatinCell {
+    export interface Cell {
         i: number;
         x: number;
         y: number;
@@ -16,11 +16,11 @@ namespace square {
         hint: boolean;
         invalid?: boolean;
 
-        nodes: LatinHive.LatinNode[];
+        nodes: LatinSquare.Node[];
     }
 
-    export class LatinSquare {
-        private static defaultConfig: SquareConfig = {
+    export class LatinCell {
+        private static defaultConfig: CellConfig = {
             height: 400,
             id: "#latin",
             reduced: true,
@@ -29,12 +29,12 @@ namespace square {
             width: 400
         };
 
-        private config: SquareConfig;
+        private config: CellConfig;
 
-        private svg: d3.Selection<LatinCell>;
+        private svg: d3.Selection<Cell>;
 
-        constructor(config?: SquareConfig) {
-            this.config = _.defaults({}, config, LatinSquare.defaultConfig);
+        constructor(config?: CellConfig) {
+            this.config = _.defaults({}, config, LatinCell.defaultConfig);
 
             this.svg = d3.select(this.config.rootId)
                 .append("svg")
@@ -45,7 +45,7 @@ namespace square {
 
         public build = () => {
             return d3.range(this.config.size * this.config.size).map((i) => {
-                let cell: LatinCell = {
+                let cell: Cell = {
                     i: i,
                     x: i % this.config.size,
                     y: Math.floor(i / this.config.size),
@@ -69,9 +69,9 @@ namespace square {
             });
         };
 
-        public drawLatin = (cells: square.LatinCell[]) => {
-            let height = +this.svg.attr("height");
-            let width = +this.svg.attr("width");
+        public drawLatin = (cells: LatinSquare.Cell[]) => {
+            let height = this.config.height;
+            let width = this.config.width;
             let size = this.config.size;
 
             let margin = 10;

@@ -1,9 +1,9 @@
 /// <reference path="./LatinHive.ts" />
 
-namespace Latin {
+namespace LatinSquare {
     export interface Constraint {
         inner: string;
-        node: LatinHive.LatinNode;
+        node: LatinSquare.Node;
         outer: string;
         skip: boolean;
         value: boolean;
@@ -50,7 +50,7 @@ namespace Latin {
         // Dancing links will convert these to a linked matrix but it is a little
         // easier to grok what is happening if we split up the constraint generation
         // and the linked matrix builder.
-        public build(size: number, nodes: LatinHive.LatinNode[]) {
+        public build(size: number, nodes: LatinSquare.Node[]) {
             let sparse = false;
             let matrix: ConstraintMatrix = {};
 
@@ -117,7 +117,7 @@ namespace Latin {
             return matrix;
         }
 
-        public draw(constraints: Latin.ConstraintMatrix) {
+        public draw(constraints: LatinSquare.ConstraintMatrix) {
             let height = this.config.height;
             let width = this.config.width;
 
@@ -128,9 +128,9 @@ namespace Latin {
                 .domain([0, 1])
                 .range([latinColors.colors["invalid"], latinColors.colors["valid"]]);
 
-            let flat: Latin.Constraint[] = _.flatten<any>(_.map(_.values(constraints), _.values));
-            let columnLabels: string[] = _.uniq(_.map<Latin.Constraint, string>(flat, columnIndex)).sort();
-            let rowLabels: string[] = _.uniq(_.map<Latin.Constraint, string>(flat, rowIndex)).sort();
+            let flat: LatinSquare.Constraint[] = _.flatten<any>(_.map(_.values(constraints), _.values));
+            let columnLabels: string[] = _.uniq(_.map<LatinSquare.Constraint, string>(flat, columnIndex)).sort();
+            let rowLabels: string[] = _.uniq(_.map<LatinSquare.Constraint, string>(flat, rowIndex)).sort();
 
             let labelOffset = 4;
             let maxWidth = +width / (columnLabels.length + 2 + labelOffset);

@@ -1,5 +1,5 @@
-namespace LatinHive {
-    export interface LatinHiveConfig {
+namespace LatinSquare {
+    export interface HiveConfig {
         id?: string;
         height?: number;
         rootId?: string;
@@ -7,31 +7,31 @@ namespace LatinHive {
         width?: number;
     }
 
-    export interface LatinNode {
+    export interface Node {
         i: number;
         x: number;
         y: number;
         guess: number;
 
-        cell: square.LatinCell;
+        cell: LatinSquare.Cell;
 
-        solutions: LatinSolution[];
+        solutions: Solution[];
     }
 
-    export interface LatinLink {
+    export interface Link {
         key: string;
-        solution: LatinSolution;
+        solution: Solution;
     }
 
-    export interface LatinSolution {
-        nodes: LatinHive.LatinNode[];
+    export interface Solution {
+        nodes: LatinSquare.Node[];
         s?: number;
         success: boolean;
         valid?: boolean;
     }
 
     export class LatinHive {
-        private static defaultConfig: LatinHiveConfig = {
+        private static defaultConfig: HiveConfig = {
             height: 400,
             id: "#hive-chart",
             rootId: "#hive-chart-container",
@@ -39,11 +39,11 @@ namespace LatinHive {
             width: 400
         };
 
-        private config: LatinHiveConfig;
+        private config: HiveConfig;
 
-        private svg: d3.Selection<LatinNode>;
+        private svg: d3.Selection<Node>;
 
-        constructor(config?: LatinHiveConfig) {
+        constructor(config?: HiveConfig) {
             this.config = _.defaults({}, config, LatinHive.defaultConfig);
 
             this.svg = d3.select(this.config.rootId)
@@ -55,8 +55,8 @@ namespace LatinHive {
                 .attr("transform", "translate(" + this.config.width / 2 + "," + this.config.height / 2 + ")");
         }
 
-        public buildNodes = (cells: square.LatinCell[]) => {
-            let nodes: LatinNode[] = [];
+        public buildNodes = (cells: LatinSquare.Cell[]) => {
+            let nodes: Node[] = [];
 
             for (let i = 0; i < cells.length; i++) {
                 let cell = cells[i];
@@ -78,12 +78,12 @@ namespace LatinHive {
             return nodes;
         };
 
-        public buildLinks = (nodes: LatinNode[], solutions: LatinSolution[]) => {
+        public buildLinks = (nodes: Node[], solutions: Solution[]) => {
             function key(d) {
                 return d.x + ":" + d.y + ":" + d.guess;
             }
 
-            let links: LatinLink[] = [];
+            let links: Link[] = [];
             for (let s = 0; s < solutions.length; s++) {
                 let solution = solutions[s];
                 if (!solution.success) {
@@ -111,7 +111,7 @@ namespace LatinHive {
             return links;
         };
 
-        public drawNodes = (nodes: LatinNode[]) => {
+        public drawNodes = (nodes: Node[]) => {
             let node = this.svg.selectAll(".node")
                 .data(nodes);
 
@@ -134,7 +134,7 @@ namespace LatinHive {
             return newNodes;
         };
 
-        public drawAxes = (cells: square.LatinCell[]) => {
+        public drawAxes = (cells: LatinSquare.Cell[]) => {
             let line = this.svg.selectAll(".axis").data(cells);
 
             let newLine = line.enter()
@@ -156,7 +156,7 @@ namespace LatinHive {
             return newLine;
         };
 
-        public drawLinks = (links: LatinLink[], cells: square.LatinCell[]) => {
+        public drawLinks = (links: Link[], cells: LatinSquare.Cell[]) => {
             let picked = _.filter(cells, "guess");
 
             let link = this.svg.selectAll(".link")

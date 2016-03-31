@@ -14,14 +14,13 @@
     ],
     "files": [
         "src/app.ts",
-        "src/builder.ts",
         "src/colors.ts",
         "src/d3hive.d.ts",
         "src/dlx.ts",
-        "src/draw.ts",
         "src/index.ts",
+        "src/Cell.ts",
+        "src/LatinConstraint.ts",
         "src/LatinHive.ts",
-        "src/square.ts",
         "typings/browser.d.ts"
     ],
     "atom": {

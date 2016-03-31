@@ -1,6 +1,6 @@
-/// <reference path="./square.ts" />
+/// <reference path="./LatinCell.ts" />
 /// <reference path="./LatinHive.ts" />
-/// <reference path="./builder.ts" />
+/// <reference path="./LatinConstraint.ts" />
 /// <reference path="./dlx.ts" />
 /// <reference path="./colors.ts" />
 
@@ -22,36 +22,36 @@ let duration = 300;
 let size = 4;
 let reduced = true;
 
-let latinSquare = new square.LatinSquare({
+let latinSquare = new LatinSquare.LatinCell({
     height: side / 2,
     rootId: "#latin-squares-container",
     width: side / 2
 });
 
-let latinHive = new LatinHive.LatinHive({
+let latinHive = new LatinSquare.LatinHive({
     height: side,
     rootId: "#hive-chart-container",
     width: side
 });
 
-let latinConstraints = new Latin.LatinConstraint({
+let latinConstraints = new LatinSquare.LatinConstraint({
     height: height,
     rootId: "#constraints-container",
     width: width
 });
 
 // One for each cell (n^2 = 16 at size 4)
-let cells: square.LatinCell[] = latinSquare.build();
+let cells: LatinSquare.Cell[] = latinSquare.build();
 
 // One for each cell + guess combination (n^3 = 64 at size 4)
-let nodes: LatinHive.LatinNode[] = latinHive.buildNodes(cells);
+let nodes: LatinSquare.Node[] = latinHive.buildNodes(cells);
 
-let constraints: Latin.ConstraintMatrix = latinConstraints.build(size, nodes);
+let constraints: LatinSquare.ConstraintMatrix = latinConstraints.build(size, nodes);
 let result = dlx.solveWithDancingLinks(constraints, true);
-let solutions: LatinHive.LatinSolution[] = result.solutions;
+let solutions: LatinSquare.Solution[] = result.solutions;
 
 // One for each cell + solution combination (64 at size 4 with 4 solutions)
-let links: LatinHive.LatinLink[] = latinHive.buildLinks(nodes, solutions);
+let links: LatinSquare.Link[] = latinHive.buildLinks(nodes, solutions);
 
 let highlight: LatinHighlight = null;
 
@@ -134,7 +134,7 @@ function draw() {
 
 // Rerun the solution filtering
 function update() {
-    let picked: square.LatinCell[] = [];
+    let picked: LatinSquare.Cell[] = [];
     cells.forEach((cell) => {
         if (cell.guess) {
             picked.push(cell);
@@ -176,7 +176,7 @@ function textToggle() {
     });
 }
 
-function createHighlight(target?: LatinHive.LatinNode | square.LatinCell): LatinHighlight {
+function createHighlight(target?: LatinSquare.Node | LatinSquare.Cell): LatinHighlight {
     if (!target) {
         return null;
     }
@@ -186,7 +186,7 @@ function createHighlight(target?: LatinHive.LatinNode | square.LatinCell): Latin
         y: target.y,
         i: target.i,
         guess: target.guess || null,
-        solutions: _.map<LatinHive.LatinSolution, number>(_.filter<LatinHive.LatinSolution>(target["solutions"], "valid"), "s")
+        solutions: _.map<LatinSquare.Solution, number>(_.filter<LatinSquare.Solution>(target["solutions"], "valid"), "s")
     };
 
     return highlight;

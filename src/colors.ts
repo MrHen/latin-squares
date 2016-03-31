@@ -50,13 +50,13 @@ namespace latinColors {
 
     export let linkColors = d3.scale.category10<number>();
 
-    function getColorType(d: LatinHive.LatinNode | square.LatinCell, highlight: LatinHighlight) {
-        function isNode(d: LatinHive.LatinNode | square.LatinCell): d is LatinHive.LatinNode {
+    function getColorType(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight) {
+        function isNode(d: LatinSquare.Node | LatinSquare.Cell): d is LatinSquare.Node {
             return !!d["cell"];
         }
 
-        let node: LatinHive.LatinNode = isNode(d) ? d : null;
-        let cell: square.LatinCell = isNode(d) ? d.cell : d;
+        let node: LatinSquare.Node = isNode(d) ? d : null;
+        let cell: LatinSquare.Cell = isNode(d) ? d.cell : d;
 
         let isNeighborX = highlight && highlight.x === d.x;
         let isNeighborY = highlight && highlight.y === d.y;
@@ -144,15 +144,15 @@ namespace latinColors {
         return "non-neighbor";
     }
 
-    export function getColor(d: LatinHive.LatinNode | square.LatinCell, highlight: LatinHighlight): string {
+    export function getColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight): string {
         return colors[getColorType(d, highlight)];
     }
 
-    export function getBorderColor(d: LatinHive.LatinNode | square.LatinCell, highlight: LatinHighlight): string {
+    export function getBorderColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight): string {
         return borders[getColorType(d, highlight)];
     }
 
-    export function getTextColor(d: LatinHive.LatinNode | square.LatinCell, highlight: LatinHighlight): string {
+    export function getTextColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight): string {
         return textColors[getColorType(d, highlight)];
     }
 }
