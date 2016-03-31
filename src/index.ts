@@ -116,7 +116,7 @@ function draw() {
             }
         });
 
-    drawConstraints(constraints);
+    LatinConstraint.drawConstraints(constraints);
 }
 
 // Rerun the solution filtering
