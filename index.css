@@ -1,22 +1,18 @@
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  margin: auto;
+  margin: 0;
   position: relative;
-  padding: 2em 15em 2em 2em;
+  padding: 0;
   background: #667;
 }
 
 .text {
-  margin-left: auto;
-  margin-right: auto;
-  min-width: 20em;
-  max-width: 40em;
   text-align: justify;
-  text-justify: inter-word;
 }
 
 hr.text {
   border: solid 1px #222;
+  margin: 1em;
 }
 
 .chart {
@@ -32,29 +28,17 @@ hr.text {
   margin: 1em auto;
 }
 
-.bad {
-  color: #e41a1c;
-}
-
-.x-neighbor {
-  color: #b3e2cd;
-}
-
-.y-neighbor {
-  color: #fdcdac;
-}
-
-#latin-squares-container {
+.left {
   position: fixed;
   top: 1em;
-  right: 1em;
+  left: 1em;
+  margin: 2em;
 }
 
-#text-toggle {
-  position: fixed;
-  top: 17em;
-  right: 1em;
-  width: 200px;
+.center {
+  margin: 4em 2em 4em 20em;
+  min-width: 20em;
+  max-width: 40em;
 }
 
 #text-toggle button {

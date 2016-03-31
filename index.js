@@ -147,7 +147,4 @@ function textToggle() {
     d3.selectAll(".text").style("display", function () {
         return toggleOn ? "block" : "none";
     });
-    d3.selectAll(".chart").style("display", function () {
-        return toggleOn ? "block" : "inline-block";
-    });
 }
