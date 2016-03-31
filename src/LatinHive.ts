@@ -121,7 +121,7 @@ namespace LatinSquare {
                 .append("g")
                 .attr("class", "node")
                 .attr("transform", (node) => {
-                    return "rotate(" + degrees(hiveConfig.angle(node.cell.i)) + ")translate(" + hiveConfig.radius(node.guess) + ",0)";
+                    return "rotate(" + LatinHive.degrees(hiveConfig.angle(node.cell.i)) + ")translate(" + hiveConfig.radius(node.guess) + ",0)";
                 });
 
             newNodes.append("circle")
@@ -143,7 +143,7 @@ namespace LatinSquare {
                 .append("g")
                 .attr("class", "axis")
                 .attr("transform", (cell) => {
-                    return "rotate(" + degrees(hiveConfig.angle(cell.i)) + ")";
+                    return "rotate(" + LatinHive.degrees(hiveConfig.angle(cell.i)) + ")";
                 });
 
             newLine.append("line")
@@ -193,6 +193,10 @@ namespace LatinSquare {
                 });
 
             return newLinks;
+        };
+
+        private static degrees = (radians: number) => {
+            return radians / Math.PI * 180 - 90;
         };
     }
 }

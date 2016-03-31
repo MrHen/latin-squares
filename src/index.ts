@@ -195,6 +195,3 @@ function createHighlight(target?: LatinSquare.Node | LatinSquare.Cell): LatinHig
     return highlight;
 }
 
-function degrees(radians: number) {
-    return radians / Math.PI * 180 - 90;
-}
