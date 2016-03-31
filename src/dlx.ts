@@ -203,6 +203,9 @@ namespace dlx {
 
                 for (let j in this.constraintMatrix[i]) {
                     let constraint = this.constraintMatrix[i][j];
+
+                    // Value is for 0's in the constraint matrix; skip is for
+                    // filtered out options based on user input.
                     if (!constraint.value || constraint.skip) {
                         continue;
                     }
