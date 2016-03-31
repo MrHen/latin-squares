@@ -3,7 +3,6 @@
 /// <reference path="./builder.ts" />
 /// <reference path="./dlx.ts" />
 /// <reference path="./colors.ts" />
-/// <reference path="./draw.ts" />
 
 interface LatinHighlight {
     x: number;
