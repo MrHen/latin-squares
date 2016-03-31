@@ -38,7 +38,7 @@ namespace dlx {
     }
 
     export class Dlx<T> {
-        private headers: DlxLink<T>;
+        private root: DlxLink<T>;
         private solutions: DlxSolution<T>[] = [];
         private currentSolution: T[] = [];
         private currentTree: DlxTree<T> = {
@@ -67,10 +67,10 @@ namespace dlx {
         };
 
         private search(depth: number) {
-            if (this.showSteps || this.headers.right === this.headers) {
-                this.recordSolution(this.headers.right === this.headers);
+            if (this.showSteps || this.root.right === this.root) {
+                this.recordSolution(this.root.right === this.root);
 
-                if (this.headers.right === this.headers) {
+                if (this.root.right === this.root) {
                     return;
                 }
             }
@@ -165,7 +165,7 @@ namespace dlx {
             let column: DlxLink<T>;
             let min = Number.MAX_VALUE;
 
-            for (let header = this.headers.right; header !== this.headers; header = header.right) {
+            for (let header = this.root.right; header !== this.root; header = header.right) {
                 if (header.size < min) {
                     column = header;
                     min = column.size;
@@ -181,28 +181,28 @@ namespace dlx {
 
             let rowTrackers: { [index: string]: DlxLink<T> } = {};
 
-            this.headers = {
+            this.root = {
                 name: "root",
                 right: null,
                 left: null,
                 up: null,
                 down: null
             };
-            this.headers.right = this.headers;
-            this.headers.left = this.headers;
+            this.root.right = this.root;
+            this.root.left = this.root;
 
             for (i in this.constraintMatrix) {
                 let curCol: DlxLink<T> = {
                     name: i,
-                    right: this.headers,
-                    left: this.headers.left,
+                    right: this.root,
+                    left: this.root.left,
                     size: 0,
                     down: null,
                     up: null,
                 };
 
-                this.headers.left.right = curCol;
-                this.headers.left = curCol;
+                this.root.left.right = curCol;
+                this.root.left = curCol;
                 curCol.up = curCol;
                 curCol.down = curCol;
 
