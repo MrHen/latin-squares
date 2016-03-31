@@ -19,6 +19,9 @@ let radius = side / 2;
 
 let duration = 300;
 
+let size = 4;
+let reduced = true;
+
 let latinSquare = new square.LatinSquare({
     height: side / 2,
     rootId: "#latin-squares-container",
@@ -31,12 +34,11 @@ let latinHive = new LatinHive.LatinHive({
     width: side
 });
 
-let constraintsSvg = d3.select("#constraints-container").append("svg").attr("id", "#constraints")
-    .attr("width", width)
-    .attr("height", height);
-
-let size = 4;
-let reduced = true;
+let latinConstraints = new Latin.LatinConstraint({
+    height: height,
+    rootId: "#constraints-container",
+    width: width
+});
 
 // One for each cell (n^2 = 16 at size 4)
 let cells: square.LatinCell[] = latinSquare.build();
@@ -44,7 +46,7 @@ let cells: square.LatinCell[] = latinSquare.build();
 // One for each cell + guess combination (n^3 = 64 at size 4)
 let nodes: LatinHive.LatinNode[] = latinHive.buildNodes(cells);
 
-let constraints: LatinConstraint.LatinConstraintMatrix = LatinConstraint.buildConstraints(size, nodes);
+let constraints: Latin.ConstraintMatrix = Latin.buildConstraints(size, nodes);
 let result = dlx.solveWithDancingLinks(constraints, true);
 let solutions: LatinHive.LatinSolution[] = result.solutions;
 
@@ -115,7 +117,7 @@ function draw() {
             }
         });
 
-    LatinConstraint.drawConstraints(constraints);
+    latinConstraints.drawConstraints(constraints);
 }
 
 // Rerun the solution filtering
