@@ -152,8 +152,8 @@ namespace LatinSquare {
                 .style("stroke-width", 1.5);
 
             node.transition().duration(this.config.animationDuration)
-                .style("fill", (node) => latinColors.getColor(node, LatinSquare.getHighlight()))
-                .style("stroke", (node) => latinColors.getBorderColor(node, LatinSquare.getHighlight()));
+                .style("fill", (node) => LatinSquare.getColor(node, LatinSquare.getHighlight()))
+                .style("stroke", (node) => LatinSquare.getBorderColor(node, LatinSquare.getHighlight()));
 
             return newNodes;
         };
@@ -175,7 +175,7 @@ namespace LatinSquare {
 
             line.selectAll("line")
                 .transition().duration(this.config.animationDuration)
-                .style("stroke", (cell) => latinColors.getBorderColor(cell, LatinSquare.getHighlight()));
+                .style("stroke", (cell) => LatinSquare.getBorderColor(cell, LatinSquare.getHighlight()));
 
             return newLine;
         };
@@ -193,7 +193,7 @@ namespace LatinSquare {
                 .style("opacity", 0)
                 .style("fill", "none")
                 .style("stroke-width", 1.5)
-                .style("stroke", (link) => latinColors.linkColors(link.solution.s));
+                .style("stroke", (link) => LatinSquare.linkColors(link.solution.s));
 
             link.exit()
                 .transition().duration(this.config.animationDuration)

@@ -3,7 +3,7 @@
 /// <reference path="./LatinHive.ts" />
 /// <reference path="./LatinConstraint.ts" />
 /// <reference path="./dlx.ts" />
-/// <reference path="./colors.ts" />
+/// <reference path="./Colors.ts" />
 
 namespace LatinSquare {
 

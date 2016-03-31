@@ -118,11 +118,11 @@ namespace LatinSquare {
             cell.select(".box")
                 .transition().duration(this.config.animationDuration)
                 .attr("stroke", (cell) => {
-                    return latinColors.getBorderColor(cell, LatinSquare.getHighlight());
+                    return LatinSquare.getBorderColor(cell, LatinSquare.getHighlight());
 
                 })
                 .attr("fill", (cell) => {
-                    return latinColors.getColor(cell, LatinSquare.getHighlight());
+                    return LatinSquare.getColor(cell, LatinSquare.getHighlight());
                 });
 
             cell.select(".label")
@@ -139,7 +139,7 @@ namespace LatinSquare {
                     return null;
                 })
                 .attr("fill", (cell) => {
-                    return latinColors.getTextColor(cell, LatinSquare.getHighlight());
+                    return LatinSquare.getTextColor(cell, LatinSquare.getHighlight());
                 });
 
             return newCells;

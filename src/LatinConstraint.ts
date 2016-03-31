@@ -128,7 +128,7 @@ namespace LatinSquare {
 
             let pixelColor = d3.scale.linear<string, number>()
                 .domain([0, 1])
-                .range([latinColors.colors["invalid"], latinColors.colors["valid"]]);
+                .range([LatinSquare.colors["invalid"], LatinSquare.colors["valid"]]);
 
             let flat: LatinSquare.Constraint[] = _.flatten<any>(_.map(_.values(constraints), _.values));
             let columnLabels: string[] = _.uniq(_.map<LatinSquare.Constraint, string>(flat, columnIndex)).sort();
@@ -167,17 +167,17 @@ namespace LatinSquare {
             pixel.transition().duration(this.config.animationDuration)
                 .style("stroke", (constraint) => {
                     if (!constraint.value) {
-                        return latinColors.borders["filler"];
+                        return LatinSquare.borders["filler"];
                     }
 
-                    return latinColors.getBorderColor(constraint.node, LatinSquare.getHighlight());
+                    return LatinSquare.getBorderColor(constraint.node, LatinSquare.getHighlight());
                 })
                 .style("fill", (constraint) => {
                     if (!constraint.value) {
-                        return latinColors.colors["filler"];
+                        return LatinSquare.colors["filler"];
                     }
 
-                    return latinColors.getColor(constraint.node, LatinSquare.getHighlight());
+                    return LatinSquare.getColor(constraint.node, LatinSquare.getHighlight());
                 });
 
             let columns = this.svg.selectAll("text.column")

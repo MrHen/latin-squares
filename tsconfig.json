@@ -14,7 +14,7 @@
     ],
     "files": [
         "src/app.ts",
-        "src/colors.ts",
+        "src/Colors.ts",
         "src/d3hive.d.ts",
         "src/dlx.ts",
         "src/Highlight.ts",

@@ -1,6 +1,6 @@
 /// <reference path="./Highlight.ts" />
 
-namespace latinColors {
+namespace LatinSquare {
     // http://colorbrewer2.org/?type=qualitative&scheme=Pastel2&n=4
     export let colors = {
         "i-neighbor": "#cbd5e8",
