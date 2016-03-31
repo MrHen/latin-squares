@@ -47,7 +47,7 @@ let nodes: LatinHive.LatinNode[] = latinHive.buildNodes(cells);
 
 let constraints: LatinConstraintMatrix = buildConstraints(size, nodes);
 let result = dlx.solveWithDancingLinks(constraints, true);
-let solutions: LatinSolution[] = result.solutions;
+let solutions: LatinHive.LatinSolution[] = result.solutions;
 
 // One for each cell + solution combination (64 at size 4 with 4 solutions)
 let links: LatinHive.LatinLink[] = latinHive.buildLinks(nodes, solutions);
@@ -173,7 +173,7 @@ function createHighlight(target?: LatinHive.LatinNode | square.LatinCell): Latin
         y: target.y,
         i: target.i,
         guess: target.guess || null,
-        solutions: _.map<LatinSolution, number>(_.filter<LatinSolution>(target["solutions"], "valid"), "s")
+        solutions: _.map<LatinHive.LatinSolution, number>(_.filter<LatinHive.LatinSolution>(target["solutions"], "valid"), "s")
     };
 
     return highlight;

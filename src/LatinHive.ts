@@ -23,6 +23,13 @@ namespace LatinHive {
         solution: LatinSolution;
     }
 
+    export interface LatinSolution {
+        nodes: LatinHive.LatinNode[];
+        s?: number;
+        success: boolean;
+        valid?: boolean;
+    }
+
     export class LatinHive {
         private static defaultConfig: LatinHiveConfig = {
             height: 400,
