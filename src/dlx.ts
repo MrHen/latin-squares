@@ -38,10 +38,10 @@ namespace dlx {
     }
 
     export class Dlx<T> {
-      private dlx_headers: DlxLink<T>;
-      private dlx_solutions: DlxSolution<T>[] = [];
-      private dlx_O: T[] = [];
-      private dlx_current: DlxTree<T> = {
+      private headers: DlxLink<T>;
+      private solutions: DlxSolution<T>[] = [];
+      private currentSolution: T[] = [];
+      private currentTree: DlxTree<T> = {
           parent: null,
           children: [],
           depth: 0,
@@ -51,67 +51,67 @@ namespace dlx {
       private constraintMatrix: DlxMatrix<T>;
       private showSteps: boolean;
 
-      constructor(constraintMatrix: DlxMatrix<T>, dlx_showSteps: boolean = false) {
+      constructor(constraintMatrix: DlxMatrix<T>, showSteps: boolean = false) {
         this.constraintMatrix = constraintMatrix;
-        this.showSteps = dlx_showSteps;
+        this.showSteps = showSteps;
       }
 
       public solve = () => {
-        this.dlx_initializeHeaders();
-        this.dlx_search(0);
+        this.initializeHeaders();
+        this.search(0);
 
         return {
-            tree: this.dlx_current,
-            solutions: this.dlx_solutions
+            tree: this.currentTree,
+            solutions: this.solutions
         };
       };
 
-      private dlx_search(k: number) {
+      private search(k: number) {
           let c: DlxLink<T>, r: DlxLink<T>;
-          if (this.showSteps || this.dlx_headers.right === this.dlx_headers) {
+          if (this.showSteps || this.headers.right === this.headers) {
               let solution = {
-                  nodes: _.clone(this.dlx_O),
-                  success: this.dlx_headers.right === this.dlx_headers
+                  nodes: _.clone(this.currentSolution),
+                  success: this.headers.right === this.headers
               };
 
-              this.dlx_current.success = this.dlx_headers.right === this.dlx_headers;
-              this.dlx_solutions.push(solution);
-              if (this.dlx_headers.right === this.dlx_headers) {
+              this.currentTree.success = this.headers.right === this.headers;
+              this.solutions.push(solution);
+              if (this.headers.right === this.headers) {
                   return;
               }
           }
-          c = this.dlx_smallestColumn();
-          this.dlx_cover(c);
+          c = this.smallestColumn();
+          this.cover(c);
           r = c.down;
           while (r !== c) {
-              this.dlx_current = {
-                  parent: this.dlx_current,
+              this.currentTree = {
+                  parent: this.currentTree,
                   children: [],
                   depth: k,
                   node: r.node
               };
-              this.dlx_current.parent.children.push(this.dlx_current);
+              this.currentTree.parent.children.push(this.currentTree);
 
-              this.dlx_O.push(r.node);
+              this.currentSolution.push(r.node);
               r = r.right;
               while (r.col !== c) {
-                  this.dlx_cover(r.col);
+                  this.cover(r.col);
                   r = r.right;
               }
-              this.dlx_search(k + 1);
+              this.search(k + 1);
               r = r.left;
               while (r.col !== c) {
-                  this.dlx_uncover(r.col);
+                  this.uncover(r.col);
                   r = r.left;
               }
               r = r.down;
-              this.dlx_O.pop();
-              this.dlx_current = this.dlx_current.parent;
+              this.currentSolution.pop();
+              this.currentTree = this.currentTree.parent;
           }
-          this.dlx_uncover(c);
+          this.uncover(c);
       }
 
-      private dlx_cover(c: DlxLink<T>) {
+      private cover(c: DlxLink<T>) {
           let r = c.down;
           c.right.left = c.left;
           c.left.right = c.right;
@@ -127,7 +127,7 @@ namespace dlx {
           }
       }
 
-      private dlx_uncover(c: DlxLink<T>) {
+      private uncover(c: DlxLink<T>) {
           let r = c.up;
           c.right.left = c;
           c.left.right = c;
@@ -143,10 +143,10 @@ namespace dlx {
           }
       }
 
-      private dlx_smallestColumn(): DlxLink<T> {
+      private smallestColumn(): DlxLink<T> {
           let h: DlxLink<T>, c: DlxLink<T>, s = Number.MAX_VALUE;
-          h = this.dlx_headers.right;
-          while (h !== this.dlx_headers) {
+          h = this.headers.right;
+          while (h !== this.headers) {
               if (h.size < s) {
                   c = h;
                   s = c.size;
@@ -156,33 +156,33 @@ namespace dlx {
           return c;
       }
 
-      private dlx_initializeHeaders() {
+      private initializeHeaders() {
           let i: string, j: string;
 
           let rowTrackers: { [index: string]: DlxLink<T> } = {};
 
-          this.dlx_headers = {
+          this.headers = {
               name: "root",
               right: null,
               left: null,
               up: null,
               down: null
           };
-          this.dlx_headers.right = this.dlx_headers;
-          this.dlx_headers.left = this.dlx_headers;
+          this.headers.right = this.headers;
+          this.headers.left = this.headers;
 
           for (i in this.constraintMatrix) {
               let curCol: DlxLink<T> = {
                   name: i,
-                  right: this.dlx_headers,
-                  left: this.dlx_headers.left,
+                  right: this.headers,
+                  left: this.headers.left,
                   size: 0,
                   down: null,
                   up: null,
               };
 
-              this.dlx_headers.left.right = curCol;
-              this.dlx_headers.left = curCol;
+              this.headers.left.right = curCol;
+              this.headers.left = curCol;
               curCol.up = curCol;
               curCol.down = curCol;
 
