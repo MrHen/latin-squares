@@ -170,8 +170,4 @@ function textToggle() {
     d3.selectAll(".text").style("display", () => {
         return toggleOn ? "block" : "none";
     });
-
-    d3.selectAll(".chart").style("display", () => {
-        return toggleOn ? "block" : "inline-block";
-    });
 }
