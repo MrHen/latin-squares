@@ -66,52 +66,65 @@ namespace dlx {
             };
         };
 
-        private search(k: number) {
-            let c: DlxLink<T>;
-            let r: DlxLink<T>;
-
+        private search(depth: number) {
             if (this.showSteps || this.headers.right === this.headers) {
-                let solution = {
-                    nodes: _.clone(this.currentSolution),
-                    success: this.headers.right === this.headers
-                };
+                this.recordSolution(this.headers.right === this.headers);
 
-                this.currentTree.success = this.headers.right === this.headers;
-                this.solutions.push(solution);
                 if (this.headers.right === this.headers) {
                     return;
                 }
             }
 
-            c = this.smallestColumn();
-            this.cover(c);
-            r = c.down;
-            while (r !== c) {
-                this.currentTree = {
-                    parent: this.currentTree,
-                    children: [],
-                    depth: k,
-                    node: r.node
-                };
-                this.currentTree.parent.children.push(this.currentTree);
+            let column = this.smallestColumn();
+            this.cover(column);
 
-                this.currentSolution.push(r.node);
-                r = r.right;
-                while (r.col !== c) {
-                    this.cover(r.col);
-                    r = r.right;
+            let row = column.down;
+            while (row !== column) {
+                this.step(row, depth);
+
+                row = row.right;
+                while (row.col !== column) {
+                    this.cover(row.col);
+                    row = row.right;
                 }
-                this.search(k + 1);
-                r = r.left;
-                while (r.col !== c) {
-                    this.uncover(r.col);
-                    r = r.left;
+                this.search(depth + 1);
+                row = row.left;
+                while (row.col !== column) {
+                    this.uncover(row.col);
+                    row = row.left;
                 }
-                r = r.down;
-                this.currentSolution.pop();
-                this.currentTree = this.currentTree.parent;
+                row = row.down;
+
+                this.unstep();
             }
-            this.uncover(c);
+            this.uncover(column);
+        }
+
+        private step(row: DlxLink<T>, depth: number) {
+          this.currentTree = {
+              parent: this.currentTree,
+              children: [],
+              depth: depth,
+              node: row.node
+          };
+          this.currentTree.parent.children.push(this.currentTree);
+
+          this.currentSolution.push(row.node);
+        }
+
+        private recordSolution(success: boolean) {
+          let solution = {
+              nodes: _.clone(this.currentSolution),
+              success: success
+          };
+
+          this.currentTree.success = success;
+          this.solutions.push(solution);
+        }
+
+        private unstep() {
+          this.currentSolution.pop();
+          this.currentTree = this.currentTree.parent;
         }
 
         private cover(c: DlxLink<T>) {
