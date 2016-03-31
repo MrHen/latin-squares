@@ -23,18 +23,21 @@ let size = 4;
 let reduced = true;
 
 let latinSquare = new LatinSquare.LatinCell({
+    animationDuration: duration,
     height: side / 2,
     rootId: "#latin-squares-container",
     width: side / 2
 });
 
 let latinHive = new LatinSquare.LatinHive({
+    animationDuration: duration,
     height: side,
     rootId: "#hive-chart-container",
     width: side
 });
 
 let latinConstraints = new LatinSquare.LatinConstraint({
+    animationDuration: duration,
     height: height,
     rootId: "#constraints-container",
     width: width

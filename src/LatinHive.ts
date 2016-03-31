@@ -1,5 +1,6 @@
 namespace LatinSquare {
     export interface HiveConfig {
+        animationDuration?: number;
         id?: string;
         height?: number;
         rootId?: string;
@@ -32,6 +33,7 @@ namespace LatinSquare {
 
     export class LatinHive {
         private static defaultConfig: HiveConfig = {
+            animationDuration: 500,
             height: 400,
             id: "#hive-chart",
             rootId: "#hive-chart-container",
@@ -127,7 +129,7 @@ namespace LatinSquare {
                 .style("r", 5)
                 .style("stroke-width", 1.5);
 
-            node.transition().duration(duration)
+            node.transition().duration(this.config.animationDuration)
                 .style("fill", (node) => latinColors.getColor(node, highlight))
                 .style("stroke", (node) => latinColors.getBorderColor(node, highlight));
 
@@ -150,7 +152,7 @@ namespace LatinSquare {
                 .attr("x2", _.last<number>(hiveConfig.radius.range()));
 
             line.selectAll("line")
-                .transition().duration(duration)
+                .transition().duration(this.config.animationDuration)
                 .style("stroke", (cell) => latinColors.getBorderColor(cell, highlight));
 
             return newLine;
@@ -172,11 +174,11 @@ namespace LatinSquare {
                 .style("stroke", (link) => latinColors.linkColors(link.solution.s));
 
             link.exit()
-                .transition().duration(duration)
+                .transition().duration(this.config.animationDuration)
                 .style("opacity", 0)
                 .remove();
 
-            link.transition().duration(duration)
+            link.transition().duration(this.config.animationDuration)
                 .style("opacity", (link) => {
                     if (!link.solution.valid) {
                         return 0;

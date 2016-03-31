@@ -1,5 +1,6 @@
 namespace LatinSquare {
     export interface CellConfig {
+        animationDuration?: number;
         id?: string;
         height?: number;
         reduced?: boolean;
@@ -21,6 +22,7 @@ namespace LatinSquare {
 
     export class LatinCell {
         private static defaultConfig: CellConfig = {
+            animationDuration: 500,
             height: 400,
             id: "#latin",
             reduced: true,
@@ -114,7 +116,7 @@ namespace LatinSquare {
                 });
 
             cell.select(".box")
-                .transition().duration(duration)
+                .transition().duration(this.config.animationDuration)
                 .attr("stroke", (cell) => {
                     return latinColors.getBorderColor(cell, highlight);
 

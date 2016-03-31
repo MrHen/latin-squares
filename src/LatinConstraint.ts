@@ -16,6 +16,7 @@ namespace LatinSquare {
     }
 
     export interface ConstraintConfig {
+        animationDuration?: number;
         id?: string;
         height?: number;
         rootId?: string;
@@ -24,6 +25,7 @@ namespace LatinSquare {
 
     export class LatinConstraint {
         private static defaultConfig: ConstraintConfig = {
+            animationDuration: 500,
             height: 400,
             id: "#constraints",
             rootId: "#constraints-container",
@@ -162,7 +164,7 @@ namespace LatinSquare {
                     return "translate(" + offset(_.indexOf(columnLabels, constraint[columnIndex]) + labelOffset) + "," + offset(_.indexOf(rowLabels, constraint[rowIndex]) + labelOffset) + ")";
                 });
 
-            pixel.transition().duration(duration)
+            pixel.transition().duration(this.config.animationDuration)
                 .style("stroke", (constraint) => {
                     if (!constraint.value) {
                         return latinColors.borders["filler"];
