@@ -175,10 +175,7 @@ namespace dlx {
         }
 
         private initializeHeaders() {
-            let i: string;
-            let j: string;
-
-            let rowTrackers: { [index: string]: DlxLink<T> } = {};
+            let rows: { [index: string]: DlxLink<T> } = {};
 
             this.root = {
                 right: null,
@@ -189,8 +186,8 @@ namespace dlx {
             this.root.right = this.root;
             this.root.left = this.root;
 
-            for (i in this.constraintMatrix) {
-                let curCol: DlxLink<T> = {
+            for (let i in this.constraintMatrix) {
+                let column: DlxLink<T> = {
                     right: this.root,
                     left: this.root.left,
                     size: 0,
@@ -198,40 +195,40 @@ namespace dlx {
                     up: null,
                 };
 
-                this.root.left.right = curCol;
-                this.root.left = curCol;
-                curCol.up = curCol;
-                curCol.down = curCol;
+                this.root.left.right = column;
+                this.root.left = column;
 
-                for (j in this.constraintMatrix[i]) {
+                column.up = column;
+                column.down = column;
+
+                for (let j in this.constraintMatrix[i]) {
                     let constraint = this.constraintMatrix[i][j];
-                    let value = constraint.value;
-                    if (!value || constraint.skip) {
+                    if (!constraint.value || constraint.skip) {
                         continue;
                     }
-                    let curRow: DlxLink<T> = {
+                    let row: DlxLink<T> = {
                         node: constraint.node,
                         right: null,
                         left: null,
-                        down: curCol,
-                        up: curCol.up,
-                        col: curCol
+                        down: column,
+                        up: column.up,
+                        col: column
                     };
-                    curCol.size++;
-                    curCol.up.down = curRow;
-                    curCol.up = curRow;
+                    column.size++;
+                    column.up.down = row;
+                    column.up = row;
 
-                    let prevRow = rowTrackers[j];
-                    if (!prevRow) {
-                        curRow.right = curRow;
-                        curRow.left = curRow;
-
-                        rowTrackers[j] = curRow;
+                    // If we haven't seen this row yet, remember it. Otherwise,
+                    // append this node to the row's left/right chain.
+                    if (!rows[j]) {
+                        row.right = row;
+                        row.left = row;
+                        rows[j] = row;
                     } else {
-                        curRow.right = prevRow;
-                        curRow.left = prevRow.left;
-                        prevRow.left.right = curRow;
-                        prevRow.left = curRow;
+                        row.right = rows[j];
+                        row.left = rows[j].left;
+                        rows[j].left.right = row;
+                        rows[j].left = row;
                     }
                 }
             }
