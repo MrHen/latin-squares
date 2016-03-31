@@ -170,14 +170,14 @@ namespace LatinSquare {
                         return latinColors.borders["filler"];
                     }
 
-                    return latinColors.getBorderColor(constraint.node, highlight);
+                    return latinColors.getBorderColor(constraint.node, LatinSquare.getHighlight());
                 })
                 .style("fill", (constraint) => {
                     if (!constraint.value) {
                         return latinColors.colors["filler"];
                     }
 
-                    return latinColors.getColor(constraint.node, highlight);
+                    return latinColors.getColor(constraint.node, LatinSquare.getHighlight());
                 });
 
             let columns = this.svg.selectAll("text.column")

@@ -1,16 +1,11 @@
+/// <reference path="./Highlight.ts" />
 /// <reference path="./LatinCell.ts" />
 /// <reference path="./LatinHive.ts" />
 /// <reference path="./LatinConstraint.ts" />
 /// <reference path="./dlx.ts" />
 /// <reference path="./colors.ts" />
 
-interface LatinHighlight {
-    x: number;
-    y: number;
-    i: number;
-    guess: number;
-    solutions: number[];
-}
+namespace LatinSquare {
 
 let width = 400;
 let height = 600;
@@ -58,8 +53,6 @@ let solutions: LatinSquare.Solution[] = result.solutions;
 // One for each cell + solution combination (64 at size 4 with 4 solutions)
 let links: LatinSquare.Link[] = latinHive.buildLinks(nodes, solutions);
 
-let highlight: LatinHighlight = null;
-
 update();
 draw();
 
@@ -69,21 +62,21 @@ function draw() {
 
     latinHive.drawNodes(nodes)
         .on("mouseover", (node) => {
-            highlight = createHighlight(node);
+            LatinSquare.setHighlight(node);
             draw();
         })
         .on("mouseout", (node) => {
-            highlight = createHighlight();
+            LatinSquare.setHighlight();
             draw();
         });
 
     latinSquare.drawLatin(cells)
         .on("mouseover", (cell) => {
-            highlight = createHighlight(cell);
+            LatinSquare.setHighlight(cell);
             draw();
         })
         .on("mouseout", (cell) => {
-            highlight = createHighlight();
+            LatinSquare.setHighlight();
             draw();
         })
         .on("click", (cell) => {
@@ -93,7 +86,7 @@ function draw() {
                 cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
 
                 update();
-                highlight = createHighlight(cell);
+                LatinSquare.setHighlight(cell);
                 draw();
             }
         });
@@ -101,13 +94,13 @@ function draw() {
     latinConstraints.draw(constraints)
         .on("mouseover", (constraint) => {
             if (constraint.value) {
-                highlight = createHighlight(constraint.node);
+                LatinSquare.setHighlight(constraint.node);
                 draw();
             }
         })
         .on("mouseout", (constraint) => {
-            if (highlight) {
-                highlight = createHighlight();
+            if (LatinSquare.getHighlight()) {
+                LatinSquare.setHighlight();
                 draw();
             }
         });
@@ -157,19 +150,4 @@ function textToggle() {
     });
 }
 
-function createHighlight(target?: LatinSquare.Node | LatinSquare.Cell): LatinHighlight {
-    if (!target) {
-        return null;
-    }
-
-    let highlight: LatinHighlight = {
-        x: target.x,
-        y: target.y,
-        i: target.i,
-        guess: target.guess || null,
-        solutions: _.map<LatinSquare.Solution, number>(_.filter<LatinSquare.Solution>(target["solutions"], "valid"), "s")
-    };
-
-    return highlight;
 }
-

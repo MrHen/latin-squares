@@ -17,8 +17,9 @@
         "src/colors.ts",
         "src/d3hive.d.ts",
         "src/dlx.ts",
+        "src/Highlight.ts",
         "src/index.ts",
-        "src/Cell.ts",
+        "src/LatinCell.ts",
         "src/LatinConstraint.ts",
         "src/LatinHive.ts",
         "typings/browser.d.ts"

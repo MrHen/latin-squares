@@ -1,3 +1,5 @@
+/// <reference path="./Highlight.ts" />
+
 namespace latinColors {
     // http://colorbrewer2.org/?type=qualitative&scheme=Pastel2&n=4
     export let colors = {
@@ -50,7 +52,7 @@ namespace latinColors {
 
     export let linkColors = d3.scale.category10<number>();
 
-    function getColorType(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight) {
+    function getColorType(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinSquare.LatinHighlight) {
         function isNode(d: LatinSquare.Node | LatinSquare.Cell): d is LatinSquare.Node {
             return !!d["cell"];
         }
@@ -144,15 +146,15 @@ namespace latinColors {
         return "non-neighbor";
     }
 
-    export function getColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight): string {
+    export function getColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinSquare.LatinHighlight): string {
         return colors[getColorType(d, highlight)];
     }
 
-    export function getBorderColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight): string {
+    export function getBorderColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinSquare.LatinHighlight): string {
         return borders[getColorType(d, highlight)];
     }
 
-    export function getTextColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinHighlight): string {
+    export function getTextColor(d: LatinSquare.Node | LatinSquare.Cell, highlight: LatinSquare.LatinHighlight): string {
         return textColors[getColorType(d, highlight)];
     }
 }
