@@ -1,8 +1,10 @@
 namespace LatinSquare {
     export interface HiveConfig {
         animationDuration?: number;
-        id?: string;
         height?: number;
+        id?: string;
+        innerRadius?: number;
+        outerRadius?: number;
         rootId?: string;
         size?: number;
         width?: number;
@@ -36,6 +38,8 @@ namespace LatinSquare {
             animationDuration: 500,
             height: 400,
             id: "#hive-chart",
+            innerRadius: 20,
+            outerRadius: 180,
             rootId: "#hive-chart-container",
             size: 4,
             width: 400
@@ -43,7 +47,13 @@ namespace LatinSquare {
 
         private config: HiveConfig;
 
+        private angle: d3.scale.Ordinal<number, number>;
+
+        private link: d3.D3HiveLink;
+
         private svg: d3.Selection<Node>;
+
+        private radius: d3.scale.Ordinal<number, number>;
 
         constructor(config?: HiveConfig) {
             this.config = _.defaults({}, config, LatinHive.defaultConfig);
@@ -55,6 +65,18 @@ namespace LatinSquare {
                 .attr("height", this.config.height)
                 .append("g")
                 .attr("transform", "translate(" + this.config.width / 2 + "," + this.config.height / 2 + ")");
+
+            this.angle = d3.scale.ordinal<number, number>()
+                .domain(d3.range(this.config.size * this.config.size + 1))
+                .rangePoints([0, 2 * Math.PI]);
+
+            this.radius = d3.scale.ordinal<number, number>()
+                .domain(d3.range(-1, this.config.size + 1))
+                .rangePoints([this.config.innerRadius, this.config.outerRadius]);
+
+            this.link = d3.hive.link()
+                .angle((link) => this.angle(link.cell.i))
+                .radius((link) => this.radius(link.guess));
         }
 
         public buildNodes = (cells: LatinSquare.Cell[]) => {
@@ -121,7 +143,7 @@ namespace LatinSquare {
                 .append("g")
                 .attr("class", "node")
                 .attr("transform", (node) => {
-                    return "rotate(" + LatinHive.degrees(hiveConfig.angle(node.cell.i)) + ")translate(" + hiveConfig.radius(node.guess) + ",0)";
+                    return "rotate(" + LatinHive.degrees(this.angle(node.cell.i)) + ")translate(" + this.radius(node.guess) + ",0)";
                 });
 
             newNodes.append("circle")
@@ -143,13 +165,13 @@ namespace LatinSquare {
                 .append("g")
                 .attr("class", "axis")
                 .attr("transform", (cell) => {
-                    return "rotate(" + LatinHive.degrees(hiveConfig.angle(cell.i)) + ")";
+                    return "rotate(" + LatinHive.degrees(this.angle(cell.i)) + ")";
                 });
 
             newLine.append("line")
                 .style("stroke-width", 1.5)
-                .attr("x1", hiveConfig.radius.range()[0])
-                .attr("x2", _.last<number>(hiveConfig.radius.range()));
+                .attr("x1", this.radius.range()[0])
+                .attr("x2", _.last<number>(this.radius.range()));
 
             line.selectAll("line")
                 .transition().duration(this.config.animationDuration)
@@ -167,7 +189,7 @@ namespace LatinSquare {
             let newLinks = link.enter()
                 .append("path")
                 .attr("class", "link")
-                .attr("d", hiveConfig.link)
+                .attr("d", this.link)
                 .style("opacity", 0)
                 .style("fill", "none")
                 .style("stroke-width", 1.5)

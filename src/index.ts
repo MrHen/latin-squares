@@ -32,6 +32,8 @@ let latinSquare = new LatinSquare.LatinCell({
 let latinHive = new LatinSquare.LatinHive({
     animationDuration: duration,
     height: side,
+    innerRadius: 20,
+    outerRadius: Math.min(height, width) / 2 - 20,
     rootId: "#hive-chart-container",
     width: side
 });
@@ -57,30 +59,6 @@ let solutions: LatinSquare.Solution[] = result.solutions;
 let links: LatinSquare.Link[] = latinHive.buildLinks(nodes, solutions);
 
 let highlight: LatinHighlight = null;
-
-interface HiveConfig {
-    innerRadius: number;
-    outerRadius: number;
-    guessExtent: [number, number];
-    angle: any;
-    radius: any;
-    link: d3.D3HiveLink;
-}
-
-let hiveConfig: HiveConfig = {
-    innerRadius: 20,
-    outerRadius: Math.min(height, width) / 2 - 20,
-    guessExtent: [1, size],
-    angle: d3.scale.ordinal<number, number>().domain(d3.range(cells.length + 1)).rangePoints([0, 2 * Math.PI]),
-    radius: null,
-    link: null
-};
-
-hiveConfig.radius = d3.scale.ordinal<number, number>().domain(d3.range(hiveConfig.guessExtent[0] - 1, hiveConfig.guessExtent[1] + 1)).rangePoints([hiveConfig.innerRadius, hiveConfig.outerRadius]);
-
-hiveConfig.link = d3.hive.link()
-    .angle((link) => hiveConfig.angle(link.cell.i))
-    .radius((link) => hiveConfig.radius(link.guess));
 
 update();
 draw();
