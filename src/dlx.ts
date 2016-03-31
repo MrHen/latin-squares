@@ -162,18 +162,17 @@ namespace dlx {
         }
 
         private smallestColumn(): DlxLink<T> {
-            let h: DlxLink<T> = this.headers.right;
-            let c: DlxLink<T>;
-            let s = Number.MAX_VALUE;
+            let column: DlxLink<T>;
+            let min = Number.MAX_VALUE;
 
-            while (h !== this.headers) {
-                if (h.size < s) {
-                    c = h;
-                    s = c.size;
+            for (let header = this.headers.right; header !== this.headers; header = header.right) {
+                if (header.size < min) {
+                    column = header;
+                    min = column.size;
                 }
-                h = h.right;
             }
-            return c;
+
+            return column;
         }
 
         private initializeHeaders() {
