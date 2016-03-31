@@ -56,7 +56,7 @@ namespace dlx {
         }
 
         public solve = () => {
-            this.initializeHeaders();
+            this.initialize();
             this.search(0);
 
             return {
@@ -174,7 +174,7 @@ namespace dlx {
             return column;
         }
 
-        private initializeHeaders() {
+        private initialize() {
             let rows: { [index: string]: DlxLink<T> } = {};
 
             this.root = {
