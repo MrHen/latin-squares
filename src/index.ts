@@ -46,7 +46,7 @@ let cells: square.LatinCell[] = latinSquare.build();
 // One for each cell + guess combination (n^3 = 64 at size 4)
 let nodes: LatinHive.LatinNode[] = latinHive.buildNodes(cells);
 
-let constraints: Latin.ConstraintMatrix = Latin.buildConstraints(size, nodes);
+let constraints: Latin.ConstraintMatrix = latinConstraints.buildConstraints(size, nodes);
 let result = dlx.solveWithDancingLinks(constraints, true);
 let solutions: LatinHive.LatinSolution[] = result.solutions;
 
