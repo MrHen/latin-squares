@@ -80,6 +80,9 @@ namespace LatinSquare {
     update();
     draw();
 
+    // Our helper classes will send back new entries after drawing in case extra
+    // setup is needed. We do our event handling here so the inner classes don't
+    // have to know about the draw/update details.
     function draw() {
         latinHive.drawLinks(links, cells);
         latinHive.drawAxes(cells);
@@ -104,8 +107,6 @@ namespace LatinSquare {
                 draw();
             })
             .on("click", (cell) => {
-                console.log("cell debug", cell);
-
                 if (!cell.hint) {
                     cell.guess = (((cell.guess || 0) + 1) % (size + 1)) || null;
 
@@ -161,17 +162,16 @@ namespace LatinSquare {
             link.solution.valid = valid;
         });
     }
+}
 
-    let toggleOn = true;
-    function textToggle() {
-        toggleOn = !toggleOn;
-        d3.selectAll(".text").style("display", () => {
-            return toggleOn ? "block" : "none";
-        });
+let toggleOn = true;
+function textToggle() {
+    toggleOn = !toggleOn;
+    d3.selectAll(".text").style("display", () => {
+        return toggleOn ? "block" : "none";
+    });
 
-        d3.selectAll(".chart").style("display", () => {
-            return toggleOn ? "block" : "inline-block";
-        });
-    }
-
+    d3.selectAll(".chart").style("display", () => {
+        return toggleOn ? "block" : "inline-block";
+    });
 }
