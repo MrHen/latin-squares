@@ -2,8 +2,8 @@
 /// <reference path="./LatinCell.ts" />
 /// <reference path="./LatinHive.ts" />
 /// <reference path="./LatinConstraint.ts" />
-/// <reference path="./dlx.ts" />
 /// <reference path="./Colors.ts" />
+/// <reference path="./Dlx.ts" />
 
 namespace LatinSquare {
 
@@ -47,7 +47,7 @@ namespace LatinSquare {
     let nodes: LatinSquare.Node[] = latinHive.buildNodes(cells);
 
     let constraints: LatinSquare.ConstraintMatrix = latinConstraints.build(size, nodes);
-    let solver = new dlx.Dlx(constraints, true);
+    let solver = new Dlx.Solver(constraints, true);
     let result = solver.solve();
     let solutions: LatinSquare.Solution[] = result.solutions;
 

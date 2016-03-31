@@ -1,5 +1,5 @@
 // Adapted from http://taeric.github.io/DancingLinks.html
-namespace dlx {
+namespace Dlx {
     export interface DlxLink<T> {
         size?: number;
         col?: DlxLink<T>;
@@ -36,7 +36,7 @@ namespace dlx {
         };
     }
 
-    export class Dlx<T> {
+    export class Solver<T> {
         private root: DlxLink<T>;
         private solutions: DlxSolution<T>[] = [];
         private currentSolution: T[] = [];

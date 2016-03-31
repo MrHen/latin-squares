@@ -16,7 +16,7 @@
         "src/app.ts",
         "src/Colors.ts",
         "src/d3hive.d.ts",
-        "src/dlx.ts",
+        "src/Dlx.ts",
         "src/Highlight.ts",
         "src/index.ts",
         "src/LatinCell.ts",
