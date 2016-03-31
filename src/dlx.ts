@@ -127,35 +127,37 @@ namespace dlx {
           this.currentTree = this.currentTree.parent;
         }
 
-        private cover(c: DlxLink<T>) {
-            let r = c.down;
-            c.right.left = c.left;
-            c.left.right = c.right;
-            while (r !== c) {
-                r = r.right;
-                while (r.col !== c) {
-                    r.up.down = r.down;
-                    r.down.up = r.up;
-                    r.col.size--;
-                    r = r.right;
+        private cover(column: DlxLink<T>) {
+            column.right.left = column.left;
+            column.left.right = column.right;
+
+            let row = column.down;
+            while (row !== column) {
+                row = row.right;
+                while (row.col !== column) {
+                    row.up.down = row.down;
+                    row.down.up = row.up;
+                    row.col.size--;
+                    row = row.right;
                 }
-                r = r.down;
+                row = row.down;
             }
         }
 
-        private uncover(c: DlxLink<T>) {
-            let r = c.up;
-            c.right.left = c;
-            c.left.right = c;
-            while (r !== c) {
-                r = r.left;
-                while (r.col !== c) {
-                    r.up.down = r;
-                    r.down.up = r;
-                    r.col.size++;
-                    r = r.left;
+        private uncover(column: DlxLink<T>) {
+            column.right.left = column;
+            column.left.right = column;
+
+            let row = column.up;
+            while (row !== column) {
+                row = row.left;
+                while (row.col !== column) {
+                    row.up.down = row;
+                    row.down.up = row;
+                    row.col.size++;
+                    row = row.left;
                 }
-                r = r.up;
+                row = row.up;
             }
         }
 
