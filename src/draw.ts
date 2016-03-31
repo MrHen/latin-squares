@@ -1,6 +1,6 @@
 /// <reference path="./builder.ts" />
 
-function drawConstraints(constraints: LatinConstraintMatrix) {
+function drawConstraints(constraints: LatinConstraint.LatinConstraintMatrix) {
     let height = constraintsSvg.attr("height");
     let width = constraintsSvg.attr("width");
 
@@ -11,9 +11,9 @@ function drawConstraints(constraints: LatinConstraintMatrix) {
         .domain([0, 1])
         .range([latinColors.colors["invalid"], latinColors.colors["valid"]]);
 
-    let flat: LatinConstraint[] = _.flatten<any>(_.map(_.values(constraints), _.values));
-    let columnLabels: string[] = _.uniq(_.map<LatinConstraint, string>(flat, columnIndex)).sort();
-    let rowLabels: string[] = _.uniq(_.map<LatinConstraint, string>(flat, rowIndex)).sort();
+    let flat: LatinConstraint.LatinConstraint[] = _.flatten<any>(_.map(_.values(constraints), _.values));
+    let columnLabels: string[] = _.uniq(_.map<LatinConstraint.LatinConstraint, string>(flat, columnIndex)).sort();
+    let rowLabels: string[] = _.uniq(_.map<LatinConstraint.LatinConstraint, string>(flat, rowIndex)).sort();
 
     let labelOffset = 4;
     let maxWidth = +width / (columnLabels.length + 2 + labelOffset);
