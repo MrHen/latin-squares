@@ -47,7 +47,8 @@ namespace LatinSquare {
     let nodes: LatinSquare.Node[] = latinHive.buildNodes(cells);
 
     let constraints: LatinSquare.ConstraintMatrix = latinConstraints.build(size, nodes);
-    let result = dlx.solveWithDancingLinks(constraints, true);
+    let solver = new dlx.Dlx(constraints, true);
+    let result = solver.solve();
     let solutions: LatinSquare.Solution[] = result.solutions;
 
     // One for each cell + solution combination (64 at size 4 with 4 solutions)
