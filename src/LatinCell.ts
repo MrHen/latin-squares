@@ -1,3 +1,7 @@
+/// <reference path="./Highlight.ts" />
+/// <reference path="./Colors.ts" />
+/// <reference path="./LatinHive.ts" />
+
 namespace LatinSquare {
     export interface CellConfig {
         animationDuration?: number;

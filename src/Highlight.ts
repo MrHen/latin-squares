@@ -1,3 +1,6 @@
+/// <reference path="./LatinCell.ts" />
+/// <reference path="./LatinHive.ts" />
+
 namespace LatinSquare {
     export interface LatinHighlight {
         x: number;
