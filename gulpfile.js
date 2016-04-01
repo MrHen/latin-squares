@@ -1,12 +1,10 @@
 var del = require('del');
 var gulp = require('gulp');
-// var gulp_angular_filesort = require('gulp-angular-filesort');
 var gulp_bower = require('gulp-bower');
 var gulp_changed = require('gulp-changed');
 var gulp_filter = require("gulp-filter");
 var gulp_gh_pages = require('gulp-gh-pages');
 var gulp_inject = require('gulp-inject');
-// var gulp_spawn_mocha = require('gulp-spawn-mocha');
 var gulp_typescript = require('gulp-typescript');
 var gulp_typings = require('gulp-typings');
 var gulp_util = require('gulp-util');
@@ -16,10 +14,6 @@ var run_sequence = require('run-sequence');
 
 var configs = {
     inject : {
-        // angular: {
-        //     name: 'angular',
-        //     ignorePath: 'app/'
-        // },
         bower: {
             name: 'bower',
             addRootSlash: false
@@ -55,7 +49,6 @@ var locations = {
     inject: {
         dest: 'app',
         src: 'app/index.html'
-        // angular: ['app/**/*.js', '!app/app.js', '!app/**/*.spec.js', '!app/bower_components/**/*']
     },
 
     filters: {
@@ -147,29 +140,6 @@ gulp.task('build:client:typescript', function () {
     return tsResult.js.pipe(gulp.dest(locations.output));
 });
 
-gulp.task('build:test', ['build:typings', 'build:client'], function(callback) {
-    run_sequence('build:test:typescript', callback);
-});
-
-gulp.task('build:test:typescript', function () {
-    var tsTestFilter = gulp_filter(locations.filters.tests);
-
-    var errors = false;
-    var tsResult = gulp.src(locations.sources)
-        .pipe(tsTestFilter)
-        .pipe(gulp_typescript(tsProject))
-        .on('error', function(error) {
-            errors = errors || error;
-        })
-        .on('end', function() {
-            if (errors) {
-                throw errors;
-            }
-        });
-
-    return tsResult.js.pipe(gulp.dest(locations.output));
-});
-
 gulp.task('build:bower', function () {
     return gulp_bower().pipe(gulp.dest(locations.bower));
 });
@@ -179,13 +149,7 @@ gulp.task('build:typings', function () {
 });
 
 gulp.task('build:inject', function(callback) {
-    run_sequence('build:inject:angular', 'build:inject:bower', callback);
-});
-
-gulp.task('build:inject:angular', function() {
-    // return gulp.src(locations.inject.src)
-    //     .pipe(gulp_inject(gulp.src(locations.inject.angular).pipe(gulp_angular_filesort()), configs.inject.angular))
-    //     .pipe(gulp.dest(locations.inject.dest));
+    run_sequence('build:inject:bower', callback);
 });
 
 gulp.task('build:inject:bower', function() {
@@ -225,17 +189,4 @@ gulp.task('deploy', function(callback) {
 gulp.task('deploy:ghpages', ['build:client', 'test:run'], function() {
     return gulp.src(locations.deploy)
         .pipe(gulp_gh_pages());
-});
-
-///////
-// Test
-///////
-
-gulp.task('test', function(callback) {
-    run_sequence('test:run', callback);
-});
-
-gulp.task('test:run', ['build:client', 'build:test'], function() {
-//     return gulp.src([locations.test])
-//         .pipe(gulp_spawn_mocha(configs.mocha));
 });
