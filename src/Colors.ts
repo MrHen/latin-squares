@@ -1,4 +1,6 @@
 /// <reference path="./Highlight.ts" />
+/// <reference path="./LatinCell.ts" />
+/// <reference path="./LatinHive.ts" />
 
 namespace LatinSquare {
     // http://colorbrewer2.org/?type=qualitative&scheme=Pastel2&n=4
